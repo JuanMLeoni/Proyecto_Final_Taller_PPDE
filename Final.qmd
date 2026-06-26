@@ -18,7 +18,10 @@ execute:
 El presente trabajo tiene como objetivo analizar un conjunto de datos sobre la evaluación internacional de la calidad del café (arábica). A través de técnicas de pre-procesamiento, análisis exploratorio y modelado estadístico (Regresión Lineal Múltiple y Regresión Logística), buscaremos identificar qué variables sensoriales y físicas determinan el puntaje final de una taza de café y qué factores permiten predecir si un café alcanzará el grado de "Excelencia".
 
 ---
+## Fuente de Datos 
+Los datos son reales, provienen del Coffee Quality Institute (CQI), recopilados a través de la base pública del proyecto del que sale el dataset de Kaggle "Coffee Quality Data (CQI)". Son evaluaciones de cata profesional (protocolo SCA) de cafés arábica de distintos países. Cada café fue puntuado por catadores certificados (Q-graders).
 
+---
 ## 1. Pre-procesamiento y Limpieza de Datos
 
 Para garantizar la calidad de los modelos, primero procedemos a limpiar los registros, normalizar las fechas, corregir errores tipográficos en variables categóricas y calcular rangos numéricos.
@@ -31,7 +34,9 @@ library(ggplot2)
 library(corrplot)
 library(caret)
 library(knitr)
-
+library(lmtest)
+library(nortest)
+library(MASS)
 # Carga del dataset original
 ICO <- read.csv("data/df_arabica_clean.csv")
 
@@ -116,6 +121,9 @@ La matriz de correlación evidencia que las variables sensoriales (Flavor, Balan
 ### 2.3 Análisis de Variables Físicas y Tratamiento de Atípicos (Outliers)
 
 Al analizar la Altitud, detectamos valores atípicos extremos (errores de tipeo de carga manual en el dataset original) que distorsionan el análisis.
+Estos valores atipicos son cercanos a 4000 msnm y ninguna region cafetelera esta por encima de los 2500-3000 msnm, el cafe se cultiva como mucho hasta esa altura.
+Los valores que aparecían (4700, 4895, 5400) son físicamente imposibles para un cultivo de café, así que son claramente errores de carga.
+
 
 ```{r analisis-altitud}
 #| layout-ncol: 2
@@ -157,6 +165,35 @@ ggplot(ICO_modelo, aes(x = Altitude_Promedio, y = Total.Cup.Points)) +
 
 Se planteó un modelo de regresión lineal para explicar la variabilidad del puntaje total del café utilizando dos características sensoriales y una física.
 
+```{r}
+# Modelo completo con las variables sensoriales candidatas + altitud
+modelo_completo <- lm(Total.Cup.Points ~ Aroma + Flavor + Aftertaste +
+                        Acidity + Body + Balance + Altitude_Promedio +
+                        Moisture.Percentage,
+                      data = ICO_modelo)
+ 
+# Selección backward por AIC
+modelo_step <- stepAIC(modelo_completo, direction = "backward", trace = TRUE)
+summary(modelo_step)
+ 
+# Comparación con el modelo original (Flavor + Balance + Altitud)
+modelo_original <- lm(Total.Cup.Points ~ Flavor + Balance + Altitude_Promedio,
+                      data = ICO_modelo)
+ 
+AIC(modelo_original, modelo_step)
+```
+
+## Seleccion de Variables
+Para no elegir las covariables de manera arbitraria, se aplicó un método de selección automática. Se partió de un modelo amplio que incluía las variables sensoriales candidatas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) junto con dos variables físicas (Altitude_Promedio y Moisture.Percentage), y se aplicó el procedimiento backward por criterio AIC mediante stepAIC.
+
+El método retuvo casi todas las variables sensoriales, lo cual es esperable: al ser componentes que integran directamente el puntaje total (Total.Cup.Points), todas presentan asociación significativa con la respuesta. Sin embargo, esto conlleva dos inconvenientes: un modelo más complejo y un mayor riesgo de multicolinealidad entre las variables sensoriales (que en el EDA mostraron correlaciones altas entre sí).
+
+Por principio de parsimonia, optamos por conservar un modelo más simple con las covariables Flavor, Balance y Altitude_Promedio. Esta decisión se fundamenta en que:
+
+El modelo reducido ya explica el 94.5% de la variabilidad del puntaje total (R² ajustado = 0.945), por lo que incorporar más variables aporta una mejora marginal.
+Un modelo con menos predictores es más fácil de interpretar y reduce la variabilidad de las estimaciones.
+Se incluyó Altitude_Promedio por ser una variable de origen físico (no sensorial), lo que aporta una dimensión distinta al modelo y atenúa parcialmente la circularidad de usar únicamente componentes del puntaje.
+
 
 ```{r}
 modelo_lineal <- lm(Total.Cup.Points ~ Flavor + Balance + Altitude_Promedio, data = ICO_modelo)
@@ -165,7 +202,19 @@ summary(modelo_lineal)
 
 Interpretación: El modelo arrojó un R-cuadrado ajustado superior al 0.94, lo que indica que más del 94% de la variabilidad del puntaje total queda explicada por el Sabor, el Balance y la Altitud. Todos los p-valores resultaron significativos (p < 0.05).
 
-### 3.1 Evaluación de Supuestos
+Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00016) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.
+
+### 3.1 Analisis de Multicolineabilidad (VIF)
+Dado que en el EDA se observaron correlaciones altas entre varias variables sensoriales, se evaluó la posible presencia de multicolinealidad mediante el Factor de Inflación de la Varianza (VIF).
+
+```{r}
+library(car)
+vif(modelo_lineal)
+```
+
+Los valores de VIF obtenidos (Flavor ≈ 3.6, Balance ≈ 3.7, Altitud ≈ 1.0) se encuentran por debajo de 5, umbral a partir del cual la multicolinealidad comienza a ser preocupante. Por lo tanto, si bien las variables sensoriales están correlacionadas entre sí, en el modelo final elegido no representa un problema. De no haberlo considerado, se corría el riesgo de obtener coeficientes inestables y errores estándar inflados, lo que dificultaría la interpretación.
+
+### 3.2 Evaluación de Supuestos
 
 Para validar la aplicabilidad del modelo, se evaluaron los residuos:
 
@@ -176,9 +225,45 @@ plot(modelo_lineal, which = 1:2)
 par(mfrow = c(1, 1))
 ```
 
-* Linealidad y Homocedasticidad: El gráfico de Residuals vs Fitted muestra una nube de puntos aleatoria sin forma de embudo, validando que la varianza de los errores es constante a lo largo del modelo.
+```{r}
+
+
+# Homocedasticidad - Breusch-Pagan (H0: varianza constante)
+bptest(modelo_lineal)
+
+# Normalidad - Anderson-Darling (H0: residuos normales)
+ad.test(residuals(modelo_lineal))
+
+# Independencia - Durbin-Watson (estadístico cercano a 2 = OK)
+dwtest(modelo_lineal)
+```
+
+
+Los tests formales matizan lo observado en los gráficos. El test de Durbin-Watson arroja un estadístico de 1.98, muy cercano a 2 (p = 0.407), por lo que no hay evidencia de autocorrelación en los residuos. Sin embargo, el test de Breusch-Pagan rechaza la hipótesis de homocedasticidad (BP = 14.82, p = 0.002), lo que sugiere la presencia de cierta heterocedasticidad que el gráfico de residuos no evidenciaba con claridad. Respecto a la normalidad, el test de Anderson-Darling también rechaza la hipótesis (A = 1.24, p = 0.003); no obstante, dada la asimetría leve de los residuos y el tamaño muestral (n = 202), esta desviación no resulta crítica gracias al Teorema Central del Límite, que garantiza la validez de la inferencia.
+
+* Linealidad y Homocedasticidad: El gráfico de Residuals vs Fitted no muestra un patrón de embudo evidente; sin embargo, como se confirma con el test formal más abajo, existe cierta heterocedasticidad.
 
 * Normalidad: El gráfico Normal Q-Q demuestra que los residuos siguen la distribución teórica en el centro de los datos, con leves desviaciones en las colas, indicando una menor precisión solo para puntajes excepcionalmente extremos.
+
+###  3.3 Observaciones Influyentes
+En los gráficos de diagnóstico se detectaron algunas observaciones alejadas del patrón general. Para evaluar si influyen en el ajuste del modelo, se calculó la distancia de Cook.
+
+```{r}
+n <- nrow(ICO_modelo)
+cook <- cooks.distance(modelo_lineal)
+cat("Cook máximo:", round(max(cook), 4), "\n")
+cat("Observaciones con Cook > 1:", sum(cook > 1), "\n")
+
+plot(modelo_lineal, which = 4)   # gráfico de distancia de Cook
+
+# Reajuste sin la observación más influyente para comparar
+obs_inf <- which.max(cook)
+modelo_sin_inf <- lm(Total.Cup.Points ~ Flavor + Balance + Altitude_Promedio,
+                     data = ICO_modelo[-obs_inf, ])
+round(cbind(Con = coef(modelo_lineal), Sin = coef(modelo_sin_inf)), 4)
+```
+
+Ninguna observación supera el umbral de Cook > 1, aunque una se aproxima (Cook ≈ 0.99). Al reajustar el modelo excluyendo ese punto, los coeficientes prácticamente no se modifican, por lo que concluimos que no ejerce una influencia relevante sobre el ajuste y no corresponde eliminarlo.
 
 ## 4. Modelo de Regresión Logística (Clasificación)
 
