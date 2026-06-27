@@ -21,13 +21,14 @@ El presente trabajo tiene como objetivo analizar un conjunto de datos sobre la e
 ## Fuente de Datos 
 Los datos son reales, provienen del Coffee Quality Institute (CQI), recopilados a través de la base pública del proyecto del que sale el dataset de Kaggle "Coffee Quality Data (CQI)". Son evaluaciones de cata profesional (protocolo SCA) de cafés arábica de distintos países. Cada café fue puntuado por catadores certificados (Q-graders).
 
----
+
 ## 1. Pre-procesamiento y Limpieza de Datos
 
 Para garantizar la calidad de los modelos, primero procedemos a limpiar los registros, normalizar las fechas, corregir errores tipográficos en variables categóricas y calcular rangos numéricos.
 
 ```{r setup-y-limpieza}
 # Carga de librerías necesarias
+library(MASS)
 library(tidyverse)
 library(lubridate)
 library(ggplot2)
@@ -36,7 +37,8 @@ library(caret)
 library(knitr)
 library(lmtest)
 library(nortest)
-library(MASS)
+library(pROC)
+
 # Carga del dataset original
 ICO <- read.csv("data/df_arabica_clean.csv")
 
@@ -269,6 +271,8 @@ Ninguna observación supera el umbral de Cook > 1, aunque una se aproxima (Cook 
 
 Para evaluar la capacidad predictiva desde una perspectiva de negocio, se transformó la variable continua en una binaria, considerando como café "Excelente" a aquel con un puntaje de 83.5 o superior.
 
+El umbral de 83.5 fue elegido por dos razones. Primero, corresponde aproximadamente a la mediana del puntaje total en el dataset (mediana = 83.75), lo que genera dos clases relativamente balanceadas (56% excelentes, 44% no excelentes). Segundo, está alineado con el criterio de la Specialty Coffee Association (SCA), que define como "café de especialidad" a aquellos con puntaje superior a 80-83 puntos. Una modificación de este umbral alteraría la distribución de clases y requeriría reentrenar el modelo.
+
 ```{r}
 ICO_modelo <- ICO_modelo %>%
   mutate(Cafe_Excelente = ifelse(Total.Cup.Points >= 83.5, 1, 0),
@@ -277,9 +281,29 @@ ICO_modelo <- ICO_modelo %>%
 
 ### 4.1 Selección del Modelo
 
-Durante el modelado iterativo, se probaron distintas variables. Al incluir el Color del grano (Color_Clean) o el Método de Procesamiento (Metodo_Limpio), sus p-valores resultaron mayores a 0.05, indicando que no aportaban significancia estadística por sobre las variables numéricas.
+Durante el modelado iterativo se probaron distintas combinaciones de variables. 
+Se evaluaron modelos que incluían el Color del grano (`Color_Clean`) y el Método 
+de Procesamiento (`Metodo_Limpio`):
 
-Por ello, el modelo definitivo se consolidó utilizando tres características sensoriales: Acidez, Cuerpo y Aroma.
+```{r}
+# Modelo con variable categórica Color
+modelo_color <- glm(Cafe_Excelente ~ Acidity + Body + Color_Clean,
+                    family = "binomial", data = ICO_modelo)
+summary(modelo_color)
+
+# Modelo con variable categórica Método de Procesamiento  
+modelo_metodo <- glm(Cafe_Excelente ~ Acidity + Body + Metodo_Limpio,
+                     family = "binomial", data = ICO_modelo)
+summary(modelo_metodo)
+```
+
+En ambos casos, los p-valores de las variables categóricas resultaron mayores a 0.05, 
+indicando que no aportan significancia estadística por sobre las variables numéricas. 
+
+Por ello, el modelo definitivo se consolidó con tres características sensoriales: 
+Acidez, Cuerpo y Aroma.
+
+
 
 ```{r}
 ICO_modelo_logistico_final <- glm(Cafe_Excelente ~ Acidity + Body + Aroma, 
@@ -288,20 +312,88 @@ ICO_modelo_logistico_final <- glm(Cafe_Excelente ~ Acidity + Body + Aroma,
 summary(ICO_modelo_logistico_final)
 ```
 
-### 4.2 Capacidad Predictiva (Matriz de Confusión)
+#### Prueba de Hipotesis global
 
-Evaluamos el modelo final contrastando sus predicciones contra la realidad:
+```{r}
+modelo_nulo <- glm(Cafe_Excelente ~ 1, family = "binomial", data = ICO_modelo)
+lrtest(modelo_nulo, ICO_modelo_logistico_final)
+```
+
+El test de razón de verosimilitud confirma que el modelo es significativamente 
+mejor que el modelo nulo (p < 0.001), es decir, al menos una variable aporta 
+información relevante para predecir si un café es de excelencia.
+
+#### Razones de odds e intervalos de confianza
+
+```{r}
+exp(cbind(OR = coef(ICO_modelo_logistico_final), 
+          confint(ICO_modelo_logistico_final))) |> round(4)
+```
+
+Los tres predictores presentan razones de odds muy elevadas, lo cual refleja 
+la endogeneidad del modelo: Acidity, Body y Aroma son componentes que suman 
+directamente al puntaje total del cual se derivó la variable respuesta. 
+La dirección es clara — mayor acidez, cuerpo y aroma aumentan fuertemente 
+la probabilidad de que un café sea de excelencia — pero las magnitudes 
+no deben interpretarse de forma literal. Esta limitación se profundiza 
+en la sección de síntesis.
+
+
+### 4.2 Capacidad Predictiva 
+
+#### Curva ROC y AUC
 
 ```{r}
 probabilidades_finales <- predict(ICO_modelo_logistico_final, type = "response")
-predicciones_finales <- as.factor(ifelse(probabilidades_finales > 0.5, 1, 0))
 
-matriz_final <- confusionMatrix(predicciones_finales, ICO_modelo$Cafe_Excelente)
+curvaROC <- roc(response  = ICO_modelo$Cafe_Excelente,
+                predictor = probabilidades_finales,
+                quiet     = TRUE)
+
+plot(curvaROC, print.auc = TRUE, 
+     main = "Curva ROC - Café Excelente")
+```
+
+El AUC obtenido es cercano a 1, lo que indica una capacidad discriminativa 
+muy alta. Este resultado es esperable dado que las predictoras son componentes 
+del puntaje total (endogeneidad).
+
+#### Eleccion del punto de corte
+
+```{r}
+# Punto de corte que maximiza sensibilidad y especificidad simultáneamente
+corte_opt <- coords(curvaROC, "best", ret = "threshold")
+cat("Punto de corte óptimo:", round(corte_opt$threshold, 4), "\n")
+```
+
+Se utilizó el punto de corte 0.5 como referencia inicial, razonable dado que 
+las clases están balanceadas (56% vs 44%). Sin embargo, el corte óptimo 
+según la curva ROC es aproximadamente **0.77**, el cual maximiza 
+simultáneamente la sensibilidad y la especificidad.
+
+#### Matriz de confusión (corte 0.5)
+
+```{r}
+predicciones_finales <- as.factor(ifelse(probabilidades_finales > 0.5, 1, 0))
+matriz_final <- confusionMatrix(predicciones_finales, 
+                                ICO_modelo$Cafe_Excelente,
+                                positive = "1")
 matriz_final
 ```
 
-##### Interpretación de la Capacidad Predictiva:
-El modelo logra una exactitud (Accuracy) superior al 92%. Específicamente, demostró una gran sensibilidad y especificidad, logrando predecir e identificar a los verdaderos cafés de excelencia (Clase 1) en más de un 93% de los casos reales.
+#### Matriz de confusión (corte óptimo)
+
+```{r}
+predicciones_opt <- as.factor(ifelse(probabilidades_finales >= corte_opt$threshold, 1, 0))
+matriz_opt <- confusionMatrix(predicciones_opt,
+                              ICO_modelo$Cafe_Excelente,
+                              positive = "1")
+matriz_opt
+```
+
+El modelo logra una exactitud superior al 91% con el corte 0.5. 
+Con el corte óptimo la exactitud varía levemente pero mejora el 
+equilibrio entre sensibilidad y especificidad.
 
 ## 5. Síntesis y Limitaciones del Estudio
 
