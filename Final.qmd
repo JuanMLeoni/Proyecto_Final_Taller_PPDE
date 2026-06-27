@@ -204,7 +204,7 @@ summary(modelo_lineal)
 
 Interpretación: El modelo arrojó un R-cuadrado ajustado superior al 0.94, lo que indica que más del 94% de la variabilidad del puntaje total queda explicada por el Sabor, el Balance y la Altitud. Todos los p-valores resultaron significativos (p < 0.05).
 
-Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00016) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.
+Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00017) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.
 
 ### 3.1 Analisis de Multicolineabilidad (VIF)
 Dado que en el EDA se observaron correlaciones altas entre varias variables sensoriales, se evaluó la posible presencia de multicolinealidad mediante el Factor de Inflación de la Varianza (VIF).
@@ -394,6 +394,33 @@ matriz_opt
 El modelo logra una exactitud superior al 91% con el corte 0.5. 
 Con el corte óptimo la exactitud varía levemente pero mejora el 
 equilibrio entre sensibilidad y especificidad.
+
+### 4.3 Validacion con datos no vistos (train/test)
+Al entrenar y evaluar el modelo con los mismos datos se corre el riesgo de 
+obtener métricas infladas (overfitting), ya que el modelo "vio" todos los casos 
+durante el ajuste. Para verificar que el modelo generaliza correctamente, 
+se realizó una partición estratificada 70% entrenamiento / 30% prueba.
+
+```{r}
+set.seed(123)
+idx   <- createDataPartition(ICO_modelo$Cafe_Excelente, p = 0.7, list = FALSE)
+train <- ICO_modelo[idx, ]
+test  <- ICO_modelo[-idx, ]
+
+# Ajuste solo con datos de entrenamiento
+modelo_train <- glm(Cafe_Excelente ~ Acidity + Body + Aroma,
+                    family = "binomial", data = train)
+
+# Evaluación en datos de prueba (no vistos)
+p_test <- predict(modelo_train, newdata = test, type = "response")
+y_test <- as.factor(ifelse(p_test >= 0.5, 1, 0))
+
+confusionMatrix(y_test, test$Cafe_Excelente, positive = "1")
+```
+
+La performance en el conjunto de prueba es similar a la obtenida con el 
+dataset completo, lo que indica que el modelo **generaliza correctamente** 
+y no está sobreajustado a los datos de entrenamiento.
 
 ## 5. Síntesis y Limitaciones del Estudio
 
