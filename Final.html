@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Juan Martín Leoni / Facundo Rubiolo">
-<meta name="dcterms.date" content="2026-06-29">
+<meta name="dcterms.date" content="2026-06-30">
 
 <title>Análisis de Calidad del Café y Modelos Predictivos</title>
 <style>
@@ -95,9 +95,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#relaciones-entre-variables-numéricas" id="toc-relaciones-entre-variables-numéricas" class="nav-link" data-scroll-target="#relaciones-entre-variables-numéricas">2.2 Relaciones entre Variables Numéricas</a></li>
   <li><a href="#análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers" id="toc-análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers" class="nav-link" data-scroll-target="#análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers">2.3 Análisis de Variables Físicas y Tratamiento de Atípicos (Outliers)</a></li>
   </ul></li>
-  <li><a href="#modelo-de-regresión-lineal-múltiple" id="toc-modelo-de-regresión-lineal-múltiple" class="nav-link" data-scroll-target="#modelo-de-regresión-lineal-múltiple">3. Modelo de Regresión Lineal Múltiple</a></li>
-  <li><a href="#seleccion-de-variables" id="toc-seleccion-de-variables" class="nav-link" data-scroll-target="#seleccion-de-variables">Seleccion de Variables</a>
+  <li><a href="#modelo-de-regresión-lineal-múltiple" id="toc-modelo-de-regresión-lineal-múltiple" class="nav-link" data-scroll-target="#modelo-de-regresión-lineal-múltiple">3. Modelo de Regresión Lineal Múltiple</a>
   <ul class="collapse">
+  <li><a href="#seleccion-de-variables" id="toc-seleccion-de-variables" class="nav-link" data-scroll-target="#seleccion-de-variables">Seleccion de Variables</a></li>
   <li><a href="#analisis-de-multicolinealidad-vif" id="toc-analisis-de-multicolinealidad-vif" class="nav-link" data-scroll-target="#analisis-de-multicolinealidad-vif">3.1 Analisis de Multicolinealidad (VIF)</a></li>
   <li><a href="#evaluación-de-supuestos" id="toc-evaluación-de-supuestos" class="nav-link" data-scroll-target="#evaluación-de-supuestos">3.2 Evaluación de Supuestos</a></li>
   <li><a href="#observaciones-influyentes" id="toc-observaciones-influyentes" class="nav-link" data-scroll-target="#observaciones-influyentes">3.3 Observaciones Influyentes</a></li>
@@ -114,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#regresión-logística-sin-endogeneidad" id="toc-regresión-logística-sin-endogeneidad" class="nav-link" data-scroll-target="#regresión-logística-sin-endogeneidad">5.2 Regresión Logística sin endogeneidad</a></li>
   <li><a href="#comparación-de-modelos" id="toc-comparación-de-modelos" class="nav-link" data-scroll-target="#comparación-de-modelos">5.3 Comparación de modelos</a></li>
   </ul></li>
-  <li><a href="#síntesis-y-limitaciones-del-estudio" id="toc-síntesis-y-limitaciones-del-estudio" class="nav-link" data-scroll-target="#síntesis-y-limitaciones-del-estudio">5. Síntesis y Limitaciones del Estudio</a></li>
+  <li><a href="#síntesis-y-limitaciones-del-estudio" id="toc-síntesis-y-limitaciones-del-estudio" class="nav-link" data-scroll-target="#síntesis-y-limitaciones-del-estudio">6. Síntesis y Limitaciones del Estudio</a></li>
   </ul>
 </nav>
 </div>
@@ -140,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 29, 2026</p>
+      <p class="date">June 30, 2026</p>
     </div>
   </div>
   
@@ -294,41 +294,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ICO_modelo)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Selección backward por AIC</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>modelo_step <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo, <span class="at">direction =</span> <span class="st">"backward"</span>, <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Start:  AIC=-751.82
-Total.Cup.Points ~ Aroma + Flavor + Aftertaste + Acidity + Body + 
-    Balance + Altitude_Promedio + Moisture.Percentage
-
-                      Df Sum of Sq     RSS     AIC
-- Altitude_Promedio    1    0.0090  4.4785 -753.42
-&lt;none&gt;                              4.4695 -751.82
-- Moisture.Percentage  1    0.0841  4.5535 -750.06
-- Balance              1    3.4237  7.8931 -638.94
-- Flavor               1    3.6479  8.1174 -633.28
-- Body                 1    3.6834  8.1528 -632.40
-- Aftertaste           1    3.6858  8.1553 -632.34
-- Acidity              1    4.9854  9.4549 -602.47
-- Aroma                1    6.7614 11.2309 -567.70
-
-Step:  AIC=-753.42
-Total.Cup.Points ~ Aroma + Flavor + Aftertaste + Acidity + Body + 
-    Balance + Moisture.Percentage
-
-                      Df Sum of Sq     RSS     AIC
-&lt;none&gt;                              4.4785 -753.42
-- Moisture.Percentage  1    0.0764  4.5549 -752.00
-- Balance              1    3.4147  7.8932 -640.94
-- Flavor               1    3.6410  8.1194 -635.23
-- Aftertaste           1    3.6771  8.1556 -634.33
-- Body                 1    3.9698  8.4483 -627.21
-- Acidity              1    5.0868  9.5652 -602.13
-- Aroma                1    6.7808 11.2593 -569.19</code></pre>
-</div>
-<details open="" class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>modelo_step <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo, <span class="at">direction =</span> <span class="st">"backward"</span>, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -359,11 +326,11 @@ F-statistic:  3751 on 7 and 194 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparación con el modelo original (Flavor + Balance + Altitud)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>modelo_original <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_original, modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparación con el modelo original (Flavor + Balance + Altitud)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>modelo_original <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_original, modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                df       AIC
@@ -371,9 +338,8 @@ modelo_original  5  218.3456
 modelo_step      9 -178.1640</code></pre>
 </div>
 </div>
-</section>
-<section id="seleccion-de-variables" class="level2">
-<h2 class="anchored" data-anchor-id="seleccion-de-variables">Seleccion de Variables</h2>
+<section id="seleccion-de-variables" class="level3">
+<h3 class="anchored" data-anchor-id="seleccion-de-variables">Seleccion de Variables</h3>
 <p>Para no elegir las covariables de manera arbitraria, se aplicó un método de selección automática. Se partió de un modelo amplio que incluía las variables sensoriales candidatas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) junto con dos variables físicas (Altitude_Promedio y Moisture.Percentage), y se aplicó el procedimiento backward por criterio AIC mediante stepAIC.</p>
 <p>El método retuvo casi todas las variables sensoriales, lo cual es esperable: al ser componentes que integran directamente el puntaje total (Total.Cup.Points), todas presentan asociación significativa con la respuesta. Sin embargo, esto conlleva dos inconvenientes: un modelo más complejo y un mayor riesgo de multicolinealidad entre las variables sensoriales (que en el EDA mostraron correlaciones altas entre sí).</p>
 <p>Por principio de parsimonia, optamos por conservar un modelo más simple con las covariables Flavor, Balance y Altitude_Promedio. Esta decisión se fundamenta en que:</p>
@@ -381,8 +347,8 @@ modelo_step      9 -178.1640</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -410,14 +376,15 @@ F-statistic:  1149 on 3 and 198 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Interpretación: El modelo arrojó un R-cuadrado ajustado superior al 0.94, lo que indica que más del 94% de la variabilidad del puntaje total queda explicada por el Sabor, el Balance y la Altitud. Todos los p-valores resultaron significativos (p &lt; 0.05).</p>
 <p>Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00017) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.</p>
+</section>
 <section id="analisis-de-multicolinealidad-vif" class="level3">
 <h3 class="anchored" data-anchor-id="analisis-de-multicolinealidad-vif">3.1 Analisis de Multicolinealidad (VIF)</h3>
 <p>Dado que en el EDA se observaron correlaciones altas entre varias variables sensoriales, se evaluó la posible presencia de multicolinealidad mediante el Factor de Inflación de la Varianza (VIF).</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>           Flavor           Balance Altitude_Promedio 
@@ -441,8 +408,8 @@ F-statistic:  1149 on 3 and 198 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Homocedasticidad - Breusch-Pagan (H0: varianza constante)</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Homocedasticidad - Breusch-Pagan (H0: varianza constante)</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -453,8 +420,8 @@ BP = 14.817, df = 3, p-value = 0.00198</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalidad - Anderson-Darling (H0: residuos normales)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ad.test</span>(<span class="fu">residuals</span>(modelo_lineal))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalidad - Anderson-Darling (H0: residuos normales)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ad.test</span>(<span class="fu">residuals</span>(modelo_lineal))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -465,8 +432,8 @@ A = 1.2416, p-value = 0.003051</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Independencia - Durbin-Watson (estadístico cercano a 2 = OK)</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Independencia - Durbin-Watson (estadístico cercano a 2 = OK)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -489,23 +456,23 @@ alternative hypothesis: true autocorrelation is greater than 0</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ICO_modelo)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cook <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(modelo_lineal)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cook máximo:"</span>, <span class="fu">round</span>(<span class="fu">max</span>(cook), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ICO_modelo)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>cook <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(modelo_lineal)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cook máximo:"</span>, <span class="fu">round</span>(<span class="fu">max</span>(cook), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Cook máximo: 0.9956 </code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observaciones con Cook &gt; 1:"</span>, <span class="fu">sum</span>(cook <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observaciones con Cook &gt; 1:"</span>, <span class="fu">sum</span>(cook <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Observaciones con Cook &gt; 1: 0 </code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_lineal, <span class="at">which =</span> <span class="dv">4</span>)   <span class="co"># gráfico de distancia de Cook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_lineal, <span class="at">which =</span> <span class="dv">4</span>)   <span class="co"># gráfico de distancia de Cook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -516,11 +483,11 @@ alternative hypothesis: true autocorrelation is greater than 0</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reajuste sin la observación más influyente para comparar</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>obs_inf <span class="ot">&lt;-</span> <span class="fu">which.max</span>(cook)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>modelo_sin_inf <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ICO_modelo[<span class="sc">-</span>obs_inf, ])</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">Con =</span> <span class="fu">coef</span>(modelo_lineal), <span class="at">Sin =</span> <span class="fu">coef</span>(modelo_sin_inf)), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reajuste sin la observación más influyente para comparar</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>obs_inf <span class="ot">&lt;-</span> <span class="fu">which.max</span>(cook)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>modelo_sin_inf <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ICO_modelo[<span class="sc">-</span>obs_inf, ])</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">Con =</span> <span class="fu">coef</span>(modelo_lineal), <span class="at">Sin =</span> <span class="fu">coef</span>(modelo_sin_inf)), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Con     Sin
@@ -540,9 +507,9 @@ Altitude_Promedio  0.0002  0.0002</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo <span class="ot">&lt;-</span> ICO_modelo <span class="sc">%&gt;%</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Cafe_Excelente =</span> <span class="fu">ifelse</span>(Total.Cup.Points <span class="sc">&gt;=</span> <span class="fl">83.5</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cafe_Excelente =</span> <span class="fu">as.factor</span>(Cafe_Excelente))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo <span class="ot">&lt;-</span> ICO_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Cafe_Excelente =</span> <span class="fu">ifelse</span>(Total.Cup.Points <span class="sc">&gt;=</span> <span class="fl">83.5</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cafe_Excelente =</span> <span class="fu">as.factor</span>(Cafe_Excelente))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="selección-del-modelo" class="level3">
@@ -551,10 +518,10 @@ Altitude_Promedio  0.0002  0.0002</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Color</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>modelo_color <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Color_Clean,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_color)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Color</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>modelo_color <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Color_Clean,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_color)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -584,10 +551,10 @@ Number of Fisher Scoring iterations: 16</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Método de Procesamiento  </span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>modelo_metodo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Metodo_Limpio,</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_metodo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Método de Procesamiento  </span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>modelo_metodo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Metodo_Limpio,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_metodo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -639,10 +606,10 @@ Number of Fisher Scoring iterations: 16</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo_logistico_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma, </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">data =</span> ICO_modelo, </span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo_logistico_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma, </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">data =</span> ICO_modelo, </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -673,8 +640,8 @@ Number of Fisher Scoring iterations: 8</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_nulo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo, ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>modelo_nulo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo, ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
@@ -695,8 +662,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(ICO_modelo_logistico_final), </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(ICO_modelo_logistico_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(ICO_modelo_logistico_final), </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(ICO_modelo_logistico_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   OR    2.5 %     97.5 %
@@ -716,14 +683,14 @@ Aroma        2003.552  42.6284   244368.7</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>probabilidades_finales <span class="ot">&lt;-</span> <span class="fu">predict</span>(ICO_modelo_logistico_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>curvaROC <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor =</span> probabilidades_finales,</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC, <span class="at">print.auc =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Café Excelente"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>probabilidades_finales <span class="ot">&lt;-</span> <span class="fu">predict</span>(ICO_modelo_logistico_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>curvaROC <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor =</span> probabilidades_finales,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC, <span class="at">print.auc =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Café Excelente"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -740,9 +707,9 @@ Aroma        2003.552  42.6284   244368.7</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Punto de corte que maximiza sensibilidad y especificidad simultáneamente</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>corte_opt <span class="ot">&lt;-</span> <span class="fu">coords</span>(curvaROC, <span class="st">"best"</span>, <span class="at">ret =</span> <span class="st">"threshold"</span>)</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Punto de corte óptimo:"</span>, <span class="fu">round</span>(corte_opt<span class="sc">$</span>threshold, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Punto de corte que maximiza sensibilidad y especificidad simultáneamente</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>corte_opt <span class="ot">&lt;-</span> <span class="fu">coords</span>(curvaROC, <span class="st">"best"</span>, <span class="at">ret =</span> <span class="st">"threshold"</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Punto de corte óptimo:"</span>, <span class="fu">round</span>(corte_opt<span class="sc">$</span>threshold, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Punto de corte óptimo: 0.7437 </code></pre>
@@ -755,11 +722,11 @@ Aroma        2003.552  42.6284   244368.7</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>predicciones_finales <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>matriz_final <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_finales, </span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                                ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">positive =</span> <span class="st">"1"</span>)</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>matriz_final</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>predicciones_finales <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>matriz_final <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_finales, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                                ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">positive =</span> <span class="st">"1"</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>matriz_final</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
@@ -797,11 +764,11 @@ Prediction   0   1
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>predicciones_opt <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;=</span> corte_opt<span class="sc">$</span>threshold, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>matriz_opt <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_opt,</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                              ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">positive =</span> <span class="st">"1"</span>)</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>matriz_opt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>predicciones_opt <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;=</span> corte_opt<span class="sc">$</span>threshold, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>matriz_opt <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_opt,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                              ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">positive =</span> <span class="st">"1"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>matriz_opt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
@@ -842,20 +809,20 @@ Prediction   0   1
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>idx   <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> ICO_modelo[idx, ]</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> ICO_modelo[<span class="sc">-</span>idx, ]</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuste solo con datos de entrenamiento</span></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>modelo_train <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma,</span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train)</span>
-<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluación en datos de prueba (no vistos)</span></span>
-<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>p_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_train, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(p_test <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(y_test, test<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>idx   <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> ICO_modelo[idx, ]</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> ICO_modelo[<span class="sc">-</span>idx, ]</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuste solo con datos de entrenamiento</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>modelo_train <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma,</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train)</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluación en datos de prueba (no vistos)</span></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>p_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_train, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(p_test <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(y_test, test<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
@@ -901,19 +868,19 @@ Prediction  0  1
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo completo con variables NO endógenas</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>modelo_completo_noend <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                               Moisture.Percentage <span class="sc">+</span></span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                                               Category.One.Defects <span class="sc">+</span></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects <span class="sc">+</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                                               Quakers,</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Selección backward por AIC</span></span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>modelo_step_noend <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo_noend, </span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">direction =</span> <span class="st">"backward"</span>, </span>
-<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step_noend)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo completo con variables NO endógenas</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>modelo_completo_noend <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>                                               Moisture.Percentage <span class="sc">+</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>                                               Category.One.Defects <span class="sc">+</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects <span class="sc">+</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>                                               Quakers,</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Selección backward por AIC</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>modelo_step_noend <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo_noend, </span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">direction =</span> <span class="st">"backward"</span>, </span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step_noend)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -956,11 +923,11 @@ F-statistic: 19.02 on 3 and 198 DF,  p-value: 6.985e-11</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo logístico sin endogeneidad</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>modelo_log_noend_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects,</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo logístico sin endogeneidad</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>modelo_log_noend_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -986,9 +953,9 @@ Number of Fisher Scoring iterations: 4</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prueba de hipótesis global</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>modelo_nulo2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo2, modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prueba de hipótesis global</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>modelo_nulo2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo2, modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Likelihood ratio test
@@ -1003,9 +970,9 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Razones de odds con IC</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(modelo_log_noend_final), </span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(modelo_log_noend_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Razones de odds con IC</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(modelo_log_noend_final), </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(modelo_log_noend_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>                         OR  2.5 % 97.5 %
@@ -1023,15 +990,15 @@ Category.Two.Defects 0.8238 0.7293 0.9184</code></pre>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Curva ROC y capacidad predictiva</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>prob_noend <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_log_noend_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>curvaROC_noend <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">predictor =</span> prob_noend,</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC_noend, <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Modelo sin endogeneidad"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Curva ROC y capacidad predictiva</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>prob_noend <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_log_noend_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>curvaROC_noend <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">predictor =</span> prob_noend,</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC_noend, <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Modelo sin endogeneidad"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1042,9 +1009,9 @@ Category.Two.Defects 0.8238 0.7293 0.9184</code></pre>
 </div>
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de confusión con corte 0.5</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>pred_noend <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(prob_noend <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(pred_noend, ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de confusión con corte 0.5</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pred_noend <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(prob_noend <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(pred_noend, ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
@@ -1122,7 +1089,7 @@ Prediction  0  1
 </section>
 </section>
 <section id="síntesis-y-limitaciones-del-estudio" class="level2">
-<h2 class="anchored" data-anchor-id="síntesis-y-limitaciones-del-estudio">5. Síntesis y Limitaciones del Estudio</h2>
+<h2 class="anchored" data-anchor-id="síntesis-y-limitaciones-del-estudio">6. Síntesis y Limitaciones del Estudio</h2>
 <p>El presente trabajo demostró exitosamente cómo la combinación de factores de cata y origen físico (altitud) permiten explicar y clasificar la calidad del café mediante modelos estadísticos robustos. Sin embargo, el análisis presenta las siguientes limitaciones inherentes:</p>
 <ol type="1">
 <li><p>Subjetividad de las Variables Predictoras: Las variables que demostraron mayor peso predictivo (Sabor, Acidez, Cuerpo, Aroma) no son mediciones físicas objetivas, sino valoraciones sensoriales asignadas por catadores humanos, lo que introduce un inevitable sesgo de subjetividad.</p></li>

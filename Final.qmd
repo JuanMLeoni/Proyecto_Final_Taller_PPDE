@@ -175,7 +175,7 @@ modelo_completo <- lm(Total.Cup.Points ~ Aroma + Flavor + Aftertaste +
                       data = ICO_modelo)
  
 # Selección backward por AIC
-modelo_step <- stepAIC(modelo_completo, direction = "backward", trace = TRUE)
+modelo_step <- stepAIC(modelo_completo, direction = "backward", trace = FALSE)
 summary(modelo_step)
  
 # Comparación con el modelo original (Flavor + Balance + Altitud)
@@ -187,7 +187,7 @@ AIC(modelo_original, modelo_step)
 
 
 
-## Seleccion de Variables
+### Seleccion de Variables
 Para no elegir las covariables de manera arbitraria, se aplicó un método de selección automática. Se partió de un modelo amplio que incluía las variables sensoriales candidatas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) junto con dos variables físicas (Altitude_Promedio y Moisture.Percentage), y se aplicó el procedimiento backward por criterio AIC mediante stepAIC.
 
 El método retuvo casi todas las variables sensoriales, lo cual es esperable: al ser componentes que integran directamente el puntaje total (Total.Cup.Points), todas presentan asociación significativa con la respuesta. Sin embargo, esto conlleva dos inconvenientes: un modelo más complejo y un mayor riesgo de multicolinealidad entre las variables sensoriales (que en el EDA mostraron correlaciones altas entre sí).
@@ -568,7 +568,7 @@ sobre la calidad del café**, independientemente del puntaje sensorial.
 
 
 
-## 5. Síntesis y Limitaciones del Estudio
+## 6. Síntesis y Limitaciones del Estudio
 
 El presente trabajo demostró exitosamente cómo la combinación de factores de cata y origen físico (altitud) permiten explicar y clasificar la calidad del café mediante modelos estadísticos robustos. Sin embargo, el análisis presenta las siguientes limitaciones inherentes:
 
