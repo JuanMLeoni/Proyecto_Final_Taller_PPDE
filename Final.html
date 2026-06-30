@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Juan Martín Leoni / Facundo Rubiolo">
-<meta name="dcterms.date" content="2026-06-25">
+<meta name="dcterms.date" content="2026-06-29">
 
 <title>Análisis de Calidad del Café y Modelos Predictivos</title>
 <style>
@@ -73,7 +73,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="Final_files/libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="Final_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Final_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="Final_files/libs/bootstrap/bootstrap-67270d1595a62d14f123c043d4fb2f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="Final_files/libs/bootstrap/bootstrap-8ffd5f67044e5306d9846f29df41dda5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#introducción" id="toc-introducción" class="nav-link active" data-scroll-target="#introducción">Introducción</a></li>
+  <li><a href="#fuente-de-datos" id="toc-fuente-de-datos" class="nav-link" data-scroll-target="#fuente-de-datos">Fuente de Datos</a></li>
   <li><a href="#pre-procesamiento-y-limpieza-de-datos" id="toc-pre-procesamiento-y-limpieza-de-datos" class="nav-link" data-scroll-target="#pre-procesamiento-y-limpieza-de-datos">1. Pre-procesamiento y Limpieza de Datos</a></li>
   <li><a href="#análisis-exploratorio-de-datos-eda" id="toc-análisis-exploratorio-de-datos-eda" class="nav-link" data-scroll-target="#análisis-exploratorio-de-datos-eda">2. Análisis Exploratorio de Datos (EDA)</a>
   <ul class="collapse">
@@ -94,14 +95,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#relaciones-entre-variables-numéricas" id="toc-relaciones-entre-variables-numéricas" class="nav-link" data-scroll-target="#relaciones-entre-variables-numéricas">2.2 Relaciones entre Variables Numéricas</a></li>
   <li><a href="#análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers" id="toc-análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers" class="nav-link" data-scroll-target="#análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers">2.3 Análisis de Variables Físicas y Tratamiento de Atípicos (Outliers)</a></li>
   </ul></li>
-  <li><a href="#modelo-de-regresión-lineal-múltiple" id="toc-modelo-de-regresión-lineal-múltiple" class="nav-link" data-scroll-target="#modelo-de-regresión-lineal-múltiple">3. Modelo de Regresión Lineal Múltiple</a>
+  <li><a href="#modelo-de-regresión-lineal-múltiple" id="toc-modelo-de-regresión-lineal-múltiple" class="nav-link" data-scroll-target="#modelo-de-regresión-lineal-múltiple">3. Modelo de Regresión Lineal Múltiple</a></li>
+  <li><a href="#seleccion-de-variables" id="toc-seleccion-de-variables" class="nav-link" data-scroll-target="#seleccion-de-variables">Seleccion de Variables</a>
   <ul class="collapse">
-  <li><a href="#evaluación-de-supuestos" id="toc-evaluación-de-supuestos" class="nav-link" data-scroll-target="#evaluación-de-supuestos">3.1 Evaluación de Supuestos</a></li>
+  <li><a href="#analisis-de-multicolinealidad-vif" id="toc-analisis-de-multicolinealidad-vif" class="nav-link" data-scroll-target="#analisis-de-multicolinealidad-vif">3.1 Analisis de Multicolinealidad (VIF)</a></li>
+  <li><a href="#evaluación-de-supuestos" id="toc-evaluación-de-supuestos" class="nav-link" data-scroll-target="#evaluación-de-supuestos">3.2 Evaluación de Supuestos</a></li>
+  <li><a href="#observaciones-influyentes" id="toc-observaciones-influyentes" class="nav-link" data-scroll-target="#observaciones-influyentes">3.3 Observaciones Influyentes</a></li>
   </ul></li>
   <li><a href="#modelo-de-regresión-logística-clasificación" id="toc-modelo-de-regresión-logística-clasificación" class="nav-link" data-scroll-target="#modelo-de-regresión-logística-clasificación">4. Modelo de Regresión Logística (Clasificación)</a>
   <ul class="collapse">
   <li><a href="#selección-del-modelo" id="toc-selección-del-modelo" class="nav-link" data-scroll-target="#selección-del-modelo">4.1 Selección del Modelo</a></li>
-  <li><a href="#capacidad-predictiva-matriz-de-confusión" id="toc-capacidad-predictiva-matriz-de-confusión" class="nav-link" data-scroll-target="#capacidad-predictiva-matriz-de-confusión">4.2 Capacidad Predictiva (Matriz de Confusión)</a></li>
+  <li><a href="#capacidad-predictiva" id="toc-capacidad-predictiva" class="nav-link" data-scroll-target="#capacidad-predictiva">4.2 Capacidad Predictiva</a></li>
+  <li><a href="#validación-con-datos-no-vistos-traintest" id="toc-validación-con-datos-no-vistos-traintest" class="nav-link" data-scroll-target="#validación-con-datos-no-vistos-traintest">4.3 Validación con datos no vistos (train/test)</a></li>
+  </ul></li>
+  <li><a href="#modelo-alternativo-sin-endogeneidad" id="toc-modelo-alternativo-sin-endogeneidad" class="nav-link" data-scroll-target="#modelo-alternativo-sin-endogeneidad">5. Modelo Alternativo sin Endogeneidad</a>
+  <ul class="collapse">
+  <li><a href="#regresión-lineal-múltiple-sin-endogeneidad" id="toc-regresión-lineal-múltiple-sin-endogeneidad" class="nav-link" data-scroll-target="#regresión-lineal-múltiple-sin-endogeneidad">5.1 Regresión Lineal Múltiple sin endogeneidad</a></li>
+  <li><a href="#regresión-logística-sin-endogeneidad" id="toc-regresión-logística-sin-endogeneidad" class="nav-link" data-scroll-target="#regresión-logística-sin-endogeneidad">5.2 Regresión Logística sin endogeneidad</a></li>
+  <li><a href="#comparación-de-modelos" id="toc-comparación-de-modelos" class="nav-link" data-scroll-target="#comparación-de-modelos">5.3 Comparación de modelos</a></li>
   </ul></li>
   <li><a href="#síntesis-y-limitaciones-del-estudio" id="toc-síntesis-y-limitaciones-del-estudio" class="nav-link" data-scroll-target="#síntesis-y-limitaciones-del-estudio">5. Síntesis y Limitaciones del Estudio</a></li>
   </ul>
@@ -129,7 +140,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 25, 2026</p>
+      <p class="date">June 29, 2026</p>
     </div>
   </div>
   
@@ -144,7 +155,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introducción" class="level2">
 <h2 class="anchored" data-anchor-id="introducción">Introducción</h2>
 <p>El presente trabajo tiene como objetivo analizar un conjunto de datos sobre la evaluación internacional de la calidad del café (arábica). A través de técnicas de pre-procesamiento, análisis exploratorio y modelado estadístico (Regresión Lineal Múltiple y Regresión Logística), buscaremos identificar qué variables sensoriales y físicas determinan el puntaje final de una taza de café y qué factores permiten predecir si un café alcanzará el grado de “Excelencia”.</p>
-<hr>
+</section>
+<section id="fuente-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="fuente-de-datos">Fuente de Datos</h2>
+<p>Los datos son reales, provienen del Coffee Quality Institute (CQI), recopilados a través de la base pública del proyecto del que sale el dataset de Kaggle “Coffee Quality Data (CQI)”. Son evaluaciones de cata profesional (protocolo SCA) de cafés arábica de distintos países. Cada café fue puntuado por catadores certificados (Q-graders).</p>
 </section>
 <section id="pre-procesamiento-y-limpieza-de-datos" class="level2">
 <h2 class="anchored" data-anchor-id="pre-procesamiento-y-limpieza-de-datos">1. Pre-procesamiento y Limpieza de Datos</h2>
@@ -153,59 +167,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details open="" class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga de librerías necesarias</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga del dataset original</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>ICO <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/df_arabica_clean.csv"</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Proceso de Normalización</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>ICO_norm <span class="ot">&lt;-</span> ICO <span class="sc">%&gt;%</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Se eliminan columnas con exceso de vacíos o repetidas</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>ICO.Number, <span class="sc">-</span>X) <span class="sc">%&gt;%</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Transformaciones de formato y limpieza de texto</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Bag.Weight.Num.kg =</span> <span class="fu">parse_number</span>(Bag.Weight),</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Grading_Date_Clean =</span> <span class="fu">mdy</span>(Grading.Date),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Harvest_Year_Clean =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Harvest.Year, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}$"</span>))</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Limpieza de la variable Color (Agrupación de categorías similares y minúsculas)</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">tolower</span>(Color),</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">case_when</span>(</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"blue-green"</span>, <span class="st">"bluish-green"</span>) <span class="sc">~</span> <span class="st">"bluish-green"</span>,</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"brownish"</span>, <span class="st">"brownish-green"</span>) <span class="sc">~</span> <span class="st">"brownish-green"</span>,</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"green"</span>, <span class="st">"greenish"</span>, <span class="st">"yellow-green"</span>, <span class="st">"yellowish"</span>, <span class="st">"yellow green"</span>) <span class="sc">~</span> <span class="st">"green"</span>,</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">==</span> <span class="st">"pale yellow"</span> <span class="sc">~</span> <span class="st">"pale yellow"</span>,</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"other"</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">as.factor</span>(Color_Clean)</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Creación de Altitud Promedio a partir de rangos de texto</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alt_Min =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Altitude, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+"</span>)),</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alt_Max =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Altitude, <span class="st">"(?&lt;=-)</span><span class="sc">\\</span><span class="st">d+"</span>)),</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">Altitude_Promedio =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Alt_Max), Alt_Min, (Alt_Min <span class="sc">+</span> Alt_Max) <span class="sc">/</span> <span class="dv">2</span>)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Alt_Min, <span class="sc">-</span>Alt_Max) <span class="sc">%&gt;%</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Agrupación de Métodos de Procesamiento para evitar alta varianza en modelos</span></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">as.character</span>(Processing.Method),</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">case_when</span>(</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>      Metodo_Limpio <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SEMI-LAVADO"</span>, <span class="st">"Semi Washed"</span>, <span class="st">"Semi-washed"</span>, <span class="st">"Semi-washed / Semi-pulped"</span>) <span class="sc">~</span> <span class="st">"Semi-Washed"</span>,</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>      Metodo_Limpio <span class="sc">==</span> <span class="st">""</span> <span class="sc">|</span> <span class="fu">is.na</span>(Metodo_Limpio) <span class="sc">~</span> <span class="st">"Other"</span>,</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> Metodo_Limpio</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">as.factor</span>(Metodo_Limpio)</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nortest)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Carga del dataset original</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>ICO <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/df_arabica_clean.csv"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Proceso de Normalización</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>ICO_norm <span class="ot">&lt;-</span> ICO <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Se eliminan columnas con exceso de vacíos o repetidas</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>ICO.Number, <span class="sc">-</span>X) <span class="sc">%&gt;%</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Transformaciones de formato y limpieza de texto</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">Bag.Weight.Num.kg =</span> <span class="fu">parse_number</span>(Bag.Weight),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">Grading_Date_Clean =</span> <span class="fu">mdy</span>(Grading.Date),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">Harvest_Year_Clean =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Harvest.Year, <span class="st">"</span><span class="sc">\\</span><span class="st">d{4}$"</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Limpieza de la variable Color (Agrupación de categorías similares y minúsculas)</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">tolower</span>(Color),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"blue-green"</span>, <span class="st">"bluish-green"</span>) <span class="sc">~</span> <span class="st">"bluish-green"</span>,</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"brownish"</span>, <span class="st">"brownish-green"</span>) <span class="sc">~</span> <span class="st">"brownish-green"</span>,</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"green"</span>, <span class="st">"greenish"</span>, <span class="st">"yellow-green"</span>, <span class="st">"yellowish"</span>, <span class="st">"yellow green"</span>) <span class="sc">~</span> <span class="st">"green"</span>,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>      Color_Clean <span class="sc">==</span> <span class="st">"pale yellow"</span> <span class="sc">~</span> <span class="st">"pale yellow"</span>,</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"other"</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">Color_Clean =</span> <span class="fu">as.factor</span>(Color_Clean)</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Creación de Altitud Promedio a partir de rangos de texto</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alt_Min =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Altitude, <span class="st">"^</span><span class="sc">\\</span><span class="st">d+"</span>)),</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">Alt_Max =</span> <span class="fu">as.numeric</span>(<span class="fu">str_extract</span>(Altitude, <span class="st">"(?&lt;=-)</span><span class="sc">\\</span><span class="st">d+"</span>)),</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">Altitude_Promedio =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(Alt_Max), Alt_Min, (Alt_Min <span class="sc">+</span> Alt_Max) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Alt_Min, <span class="sc">-</span>Alt_Max) <span class="sc">%&gt;%</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Agrupación de Métodos de Procesamiento para evitar alta varianza en modelos</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">as.character</span>(Processing.Method),</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>      Metodo_Limpio <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"SEMI-LAVADO"</span>, <span class="st">"Semi Washed"</span>, <span class="st">"Semi-washed"</span>, <span class="st">"Semi-washed / Semi-pulped"</span>) <span class="sc">~</span> <span class="st">"Semi-Washed"</span>,</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>      Metodo_Limpio <span class="sc">==</span> <span class="st">""</span> <span class="sc">|</span> <span class="fu">is.na</span>(Metodo_Limpio) <span class="sc">~</span> <span class="st">"Other"</span>,</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> Metodo_Limpio</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">Metodo_Limpio =</span> <span class="fu">as.factor</span>(Metodo_Limpio)</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -240,7 +258,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers" class="level3">
 <h3 class="anchored" data-anchor-id="análisis-de-variables-físicas-y-tratamiento-de-atípicos-outliers">2.3 Análisis de Variables Físicas y Tratamiento de Atípicos (Outliers)</h3>
-<p>Al analizar la Altitud, detectamos valores atípicos extremos (errores de tipeo de carga manual en el dataset original) que distorsionan el análisis.</p>
+<p>Al analizar la Altitud, detectamos valores atípicos extremos (errores de tipeo de carga manual en el dataset original) que distorsionan el análisis. Estos valores atipicos son cercanos a 4000 msnm y ninguna region cafetelera esta por encima de los 2500-3000 msnm, el cafe se cultiva como mucho hasta esa altura. Los valores que aparecían (4700, 4895, 5400) son físicamente imposibles para un cultivo de café, así que son claramente errores de carga.</p>
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -269,8 +287,102 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio, <span class="at">data =</span> ICO_modelo)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo completo con las variables sensoriales candidatas + altitud</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>modelo_completo <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Aroma <span class="sc">+</span> Flavor <span class="sc">+</span> Aftertaste <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                        Acidity <span class="sc">+</span> Body <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                        Moisture.Percentage,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Selección backward por AIC</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>modelo_step <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo, <span class="at">direction =</span> <span class="st">"backward"</span>, <span class="at">trace =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Start:  AIC=-751.82
+Total.Cup.Points ~ Aroma + Flavor + Aftertaste + Acidity + Body + 
+    Balance + Altitude_Promedio + Moisture.Percentage
+
+                      Df Sum of Sq     RSS     AIC
+- Altitude_Promedio    1    0.0090  4.4785 -753.42
+&lt;none&gt;                              4.4695 -751.82
+- Moisture.Percentage  1    0.0841  4.5535 -750.06
+- Balance              1    3.4237  7.8931 -638.94
+- Flavor               1    3.6479  8.1174 -633.28
+- Body                 1    3.6834  8.1528 -632.40
+- Aftertaste           1    3.6858  8.1553 -632.34
+- Acidity              1    4.9854  9.4549 -602.47
+- Aroma                1    6.7614 11.2309 -567.70
+
+Step:  AIC=-753.42
+Total.Cup.Points ~ Aroma + Flavor + Aftertaste + Acidity + Body + 
+    Balance + Moisture.Percentage
+
+                      Df Sum of Sq     RSS     AIC
+&lt;none&gt;                              4.4785 -753.42
+- Moisture.Percentage  1    0.0764  4.5549 -752.00
+- Balance              1    3.4147  7.8932 -640.94
+- Flavor               1    3.6410  8.1194 -635.23
+- Aftertaste           1    3.6771  8.1556 -634.33
+- Body                 1    3.9698  8.4483 -627.21
+- Acidity              1    5.0868  9.5652 -602.13
+- Aroma                1    6.7808 11.2593 -569.19</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Total.Cup.Points ~ Aroma + Flavor + Aftertaste + 
+    Acidity + Body + Balance + Moisture.Percentage, data = ICO_modelo)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1.25530 -0.06470  0.01049  0.07361  0.91758 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)         29.10181    0.37362  77.892   &lt;2e-16 ***
+Aroma                1.17102    0.06833  17.139   &lt;2e-16 ***
+Flavor               1.22440    0.09749  12.559   &lt;2e-16 ***
+Aftertaste           1.20453    0.09544  12.621   &lt;2e-16 ***
+Acidity              1.20123    0.08092  14.844   &lt;2e-16 ***
+Body                 1.09892    0.08380  13.114   &lt;2e-16 ***
+Balance              1.23763    0.10176  12.162   &lt;2e-16 ***
+Moisture.Percentage -0.01573    0.00865  -1.819   0.0704 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.1519 on 194 degrees of freedom
+Multiple R-squared:  0.9927,    Adjusted R-squared:  0.9924 
+F-statistic:  3751 on 7 and 194 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparación con el modelo original (Flavor + Balance + Altitud)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>modelo_original <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">AIC</span>(modelo_original, modelo_step)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                df       AIC
+modelo_original  5  218.3456
+modelo_step      9 -178.1640</code></pre>
+</div>
+</div>
+</section>
+<section id="seleccion-de-variables" class="level2">
+<h2 class="anchored" data-anchor-id="seleccion-de-variables">Seleccion de Variables</h2>
+<p>Para no elegir las covariables de manera arbitraria, se aplicó un método de selección automática. Se partió de un modelo amplio que incluía las variables sensoriales candidatas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) junto con dos variables físicas (Altitude_Promedio y Moisture.Percentage), y se aplicó el procedimiento backward por criterio AIC mediante stepAIC.</p>
+<p>El método retuvo casi todas las variables sensoriales, lo cual es esperable: al ser componentes que integran directamente el puntaje total (Total.Cup.Points), todas presentan asociación significativa con la respuesta. Sin embargo, esto conlleva dos inconvenientes: un modelo más complejo y un mayor riesgo de multicolinealidad entre las variables sensoriales (que en el EDA mostraron correlaciones altas entre sí).</p>
+<p>Por principio de parsimonia, optamos por conservar un modelo más simple con las covariables Flavor, Balance y Altitude_Promedio. Esta decisión se fundamenta en que:</p>
+<p>El modelo reducido ya explica el 94.5% de la variabilidad del puntaje total (R² ajustado = 0.945), por lo que incorporar más variables aporta una mejora marginal. Un modelo con menos predictores es más fácil de interpretar y reduce la variabilidad de las estimaciones. Se incluyó Altitude_Promedio por ser una variable de origen físico (no sensorial), lo que aporta una dimensión distinta al modelo y atenúa parcialmente la circularidad de usar únicamente componentes del puntaje.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>modelo_lineal <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -297,46 +409,240 @@ F-statistic:  1149 on 3 and 198 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Interpretación: El modelo arrojó un R-cuadrado ajustado superior al 0.94, lo que indica que más del 94% de la variabilidad del puntaje total queda explicada por el Sabor, el Balance y la Altitud. Todos los p-valores resultaron significativos (p &lt; 0.05).</p>
+<p>Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00017) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.</p>
+<section id="analisis-de-multicolinealidad-vif" class="level3">
+<h3 class="anchored" data-anchor-id="analisis-de-multicolinealidad-vif">3.1 Analisis de Multicolinealidad (VIF)</h3>
+<p>Dado que en el EDA se observaron correlaciones altas entre varias variables sensoriales, se evaluó la posible presencia de multicolinealidad mediante el Factor de Inflación de la Varianza (VIF).</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vif</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Flavor           Balance Altitude_Promedio 
+         3.640965          3.671142          1.022561 </code></pre>
+</div>
+</div>
+<p>Los valores de VIF obtenidos (Flavor ≈ 3.6, Balance ≈ 3.7, Altitud ≈ 1.0) se encuentran por debajo de 5, umbral a partir del cual la multicolinealidad comienza a ser preocupante. Por lo tanto, si bien las variables sensoriales están correlacionadas entre sí, en el modelo final elegido no representa un problema. De no haberlo considerado, se corría el riesgo de obtener coeficientes inestables y errores estándar inflados, lo que dificultaría la interpretación.</p>
+</section>
 <section id="evaluación-de-supuestos" class="level3">
-<h3 class="anchored" data-anchor-id="evaluación-de-supuestos">3.1 Evaluación de Supuestos</h3>
+<h3 class="anchored" data-anchor-id="evaluación-de-supuestos">3.2 Evaluación de Supuestos</h3>
 <p>Para validar la aplicabilidad del modelo, se evaluaron los residuos:</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Homocedasticidad - Breusch-Pagan (H0: varianza constante)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  modelo_lineal
+BP = 14.817, df = 3, p-value = 0.00198</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalidad - Anderson-Darling (H0: residuos normales)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ad.test</span>(<span class="fu">residuals</span>(modelo_lineal))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Anderson-Darling normality test
+
+data:  residuals(modelo_lineal)
+A = 1.2416, p-value = 0.003051</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Independencia - Durbin-Watson (estadístico cercano a 2 = OK)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dwtest</span>(modelo_lineal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Durbin-Watson test
+
+data:  modelo_lineal
+DW = 1.9786, p-value = 0.4067
+alternative hypothesis: true autocorrelation is greater than 0</code></pre>
+</div>
+</div>
+<p>Los tests formales matizan lo observado en los gráficos. El test de Durbin-Watson arroja un estadístico de 1.98, muy cercano a 2 (p = 0.407), por lo que no hay evidencia de autocorrelación en los residuos. Sin embargo, el test de Breusch-Pagan rechaza la hipótesis de homocedasticidad (BP = 14.82, p = 0.002), lo que sugiere la presencia de cierta heterocedasticidad que el gráfico de residuos no evidenciaba con claridad. Respecto a la normalidad, el test de Anderson-Darling también rechaza la hipótesis (A = 1.24, p = 0.003); no obstante, dada la asimetría leve de los residuos y el tamaño muestral (n = 202), esta desviación no resulta crítica gracias al Teorema Central del Límite, que garantiza la validez de la inferencia.</p>
 <ul>
-<li><p>Linealidad y Homocedasticidad: El gráfico de Residuals vs Fitted muestra una nube de puntos aleatoria sin forma de embudo, validando que la varianza de los errores es constante a lo largo del modelo.</p></li>
+<li><p>Linealidad y Homocedasticidad: El gráfico de Residuals vs Fitted no muestra un patrón de embudo evidente; sin embargo, como se confirma con el test formal más abajo, existe cierta heterocedasticidad.</p></li>
 <li><p>Normalidad: El gráfico Normal Q-Q demuestra que los residuos siguen la distribución teórica en el centro de los datos, con leves desviaciones en las colas, indicando una menor precisión solo para puntajes excepcionalmente extremos.</p></li>
 </ul>
+</section>
+<section id="observaciones-influyentes" class="level3">
+<h3 class="anchored" data-anchor-id="observaciones-influyentes">3.3 Observaciones Influyentes</h3>
+<p>En los gráficos de diagnóstico se detectaron algunas observaciones alejadas del patrón general. Para evaluar si influyen en el ajuste del modelo, se calculó la distancia de Cook.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(ICO_modelo)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cook <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(modelo_lineal)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Cook máximo:"</span>, <span class="fu">round</span>(<span class="fu">max</span>(cook), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Cook máximo: 0.9956 </code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observaciones con Cook &gt; 1:"</span>, <span class="fu">sum</span>(cook <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observaciones con Cook &gt; 1: 0 </code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(modelo_lineal, <span class="at">which =</span> <span class="dv">4</span>)   <span class="co"># gráfico de distancia de Cook</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reajuste sin la observación más influyente para comparar</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>obs_inf <span class="ot">&lt;-</span> <span class="fu">which.max</span>(cook)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>modelo_sin_inf <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Flavor <span class="sc">+</span> Balance <span class="sc">+</span> Altitude_Promedio,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> ICO_modelo[<span class="sc">-</span>obs_inf, ])</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">cbind</span>(<span class="at">Con =</span> <span class="fu">coef</span>(modelo_lineal), <span class="at">Sin =</span> <span class="fu">coef</span>(modelo_sin_inf)), <span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      Con     Sin
+(Intercept)       33.7468 33.2827
+Flavor             3.3590  3.0121
+Balance            3.1059  3.5213
+Altitude_Promedio  0.0002  0.0002</code></pre>
+</div>
+</div>
+<p>Ninguna observación supera el umbral de Cook &gt; 1, aunque una se aproxima (Cook ≈ 0.99). Al reajustar el modelo excluyendo ese punto, los coeficientes prácticamente no se modifican, por lo que concluimos que no ejerce una influencia relevante sobre el ajuste y no corresponde eliminarlo.</p>
 </section>
 </section>
 <section id="modelo-de-regresión-logística-clasificación" class="level2">
 <h2 class="anchored" data-anchor-id="modelo-de-regresión-logística-clasificación">4. Modelo de Regresión Logística (Clasificación)</h2>
 <p>Para evaluar la capacidad predictiva desde una perspectiva de negocio, se transformó la variable continua en una binaria, considerando como café “Excelente” a aquel con un puntaje de 83.5 o superior.</p>
+<p>El umbral de 83.5 fue elegido por dos razones. Primero, corresponde aproximadamente a la mediana del puntaje total en el dataset (mediana = 83.75), lo que genera dos clases relativamente balanceadas (56% excelentes, 44% no excelentes). Segundo, está alineado con el criterio de la Specialty Coffee Association (SCA), que define como “café de especialidad” a aquellos con puntaje superior a 80-83 puntos. Una modificación de este umbral alteraría la distribución de clases y requeriría reentrenar el modelo.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo <span class="ot">&lt;-</span> ICO_modelo <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Cafe_Excelente =</span> <span class="fu">ifelse</span>(Total.Cup.Points <span class="sc">&gt;=</span> <span class="fl">83.5</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cafe_Excelente =</span> <span class="fu">as.factor</span>(Cafe_Excelente))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo <span class="ot">&lt;-</span> ICO_modelo <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Cafe_Excelente =</span> <span class="fu">ifelse</span>(Total.Cup.Points <span class="sc">&gt;=</span> <span class="fl">83.5</span>, <span class="dv">1</span>, <span class="dv">0</span>),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">Cafe_Excelente =</span> <span class="fu">as.factor</span>(Cafe_Excelente))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <section id="selección-del-modelo" class="level3">
 <h3 class="anchored" data-anchor-id="selección-del-modelo">4.1 Selección del Modelo</h3>
-<p>Durante el modelado iterativo, se probaron distintas variables. Al incluir el Color del grano (Color_Clean) o el Método de Procesamiento (Metodo_Limpio), sus p-valores resultaron mayores a 0.05, indicando que no aportaban significancia estadística por sobre las variables numéricas.</p>
-<p>Por ello, el modelo definitivo se consolidó utilizando tres características sensoriales: Acidez, Cuerpo y Aroma.</p>
+<p>Durante el modelado iterativo se probaron distintas combinaciones de variables. Se evaluaron modelos que incluían el Color del grano (<code>Color_Clean</code>) y el Método de Procesamiento (<code>Metodo_Limpio</code>):</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo_logistico_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma, </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">data =</span> ICO_modelo, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Color</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>modelo_color <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Color_Clean,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_color)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Cafe_Excelente ~ Acidity + Body + Color_Clean, 
+    family = "binomial", data = ICO_modelo)
+
+Coefficients:
+                           Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)               -172.4444    26.3847  -6.536 6.33e-11 ***
+Acidity                     11.5027     2.2787   5.048 4.46e-07 ***
+Body                        10.9568     2.5483   4.300 1.71e-05 ***
+Color_Cleanbrownish-green    0.8479     1.2501   0.678    0.498    
+Color_Cleangreen             0.9994     0.7826   1.277    0.202    
+Color_Cleanother            14.2054  1652.4903   0.009    0.993    
+Color_Cleanpale yellow       0.3481     1.6439   0.212    0.832    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 277.173  on 201  degrees of freedom
+Residual deviance:  91.481  on 195  degrees of freedom
+AIC: 105.48
+
+Number of Fisher Scoring iterations: 16</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo con variable categórica Método de Procesamiento  </span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>modelo_metodo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Metodo_Limpio,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_metodo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Cafe_Excelente ~ Acidity + Body + Metodo_Limpio, 
+    family = "binomial", data = ICO_modelo)
+
+Coefficients:
+                                                  Estimate Std. Error z value
+(Intercept)                                       -185.927   3956.264  -0.047
+Acidity                                             11.543      2.296   5.027
+Body                                                10.532      2.477   4.252
+Metodo_LimpioDouble Anaerobic Washed                17.572   5594.885   0.003
+Metodo_LimpioDouble Carbonic Maceration / Natural   31.299   5594.884   0.006
+Metodo_LimpioHoney,Mossto                           24.857   5594.884   0.004
+Metodo_LimpioNatural / Dry                          17.833   3956.180   0.005
+Metodo_LimpioOther                                  16.286   3956.181   0.004
+Metodo_LimpioPulped natural / honey                 17.678   3956.180   0.004
+Metodo_LimpioSemi-Washed                            21.687   4000.805   0.005
+Metodo_LimpioWashed / Wet                           17.001   3956.180   0.004
+Metodo_LimpioWet Hulling                            32.337   5594.884   0.006
+                                                  Pr(&gt;|z|)    
+(Intercept)                                          0.963    
+Acidity                                           4.99e-07 ***
+Body                                              2.12e-05 ***
+Metodo_LimpioDouble Anaerobic Washed                 0.997    
+Metodo_LimpioDouble Carbonic Maceration / Natural    0.996    
+Metodo_LimpioHoney,Mossto                            0.996    
+Metodo_LimpioNatural / Dry                           0.996    
+Metodo_LimpioOther                                   0.997    
+Metodo_LimpioPulped natural / honey                  0.996    
+Metodo_LimpioSemi-Washed                             0.996    
+Metodo_LimpioWashed / Wet                            0.997    
+Metodo_LimpioWet Hulling                             0.995    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 277.173  on 201  degrees of freedom
+Residual deviance:  90.061  on 190  degrees of freedom
+AIC: 114.06
+
+Number of Fisher Scoring iterations: 16</code></pre>
+</div>
+</div>
+<p>En ambos casos, los p-valores de las variables categóricas resultaron mayores a 0.05, indicando que no aportan significancia estadística por sobre las variables numéricas.</p>
+<p>Por ello, el modelo definitivo se consolidó con tres características sensoriales: Acidez, Cuerpo y Aroma.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ICO_modelo_logistico_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma, </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">data =</span> ICO_modelo, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -362,18 +668,98 @@ AIC: 83.642
 Number of Fisher Scoring iterations: 8</code></pre>
 </div>
 </div>
-</section>
-<section id="capacidad-predictiva-matriz-de-confusión" class="level3">
-<h3 class="anchored" data-anchor-id="capacidad-predictiva-matriz-de-confusión">4.2 Capacidad Predictiva (Matriz de Confusión)</h3>
-<p>Evaluamos el modelo final contrastando sus predicciones contra la realidad:</p>
+<section id="prueba-de-hipotesis-global" class="level4">
+<h4 class="anchored" data-anchor-id="prueba-de-hipotesis-global">Prueba de Hipotesis global</h4>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>probabilidades_finales <span class="ot">&lt;-</span> <span class="fu">predict</span>(ICO_modelo_logistico_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>predicciones_finales <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>matriz_final <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_finales, ICO_modelo<span class="sc">$</span>Cafe_Excelente)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>matriz_final</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>modelo_nulo <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo, ICO_modelo_logistico_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: Cafe_Excelente ~ 1
+Model 2: Cafe_Excelente ~ Acidity + Body + Aroma
+  #Df   LogLik Df  Chisq Pr(&gt;Chisq)    
+1   1 -138.587                         
+2   4  -37.821  3 201.53  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>El test de razón de verosimilitud confirma que el modelo es significativamente mejor que el modelo nulo (p &lt; 0.001), es decir, al menos una variable aporta información relevante para predecir si un café es de excelencia.</p>
+</section>
+<section id="razones-de-odds-e-intervalos-de-confianza" class="level4">
+<h4 class="anchored" data-anchor-id="razones-de-odds-e-intervalos-de-confianza">Razones de odds e intervalos de confianza</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(ICO_modelo_logistico_final), </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(ICO_modelo_logistico_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   OR    2.5 %     97.5 %
+(Intercept)     0.000   0.0000        0.0
+Acidity     45461.735 343.9607 20426037.1
+Body        51877.689 323.0827 25452522.7
+Aroma        2003.552  42.6284   244368.7</code></pre>
+</div>
+</div>
+<p>Los tres predictores presentan razones de odds muy elevadas, lo cual refleja la endogeneidad del modelo: Acidity, Body y Aroma son componentes que suman directamente al puntaje total del cual se derivó la variable respuesta. La dirección es clara — mayor acidez, cuerpo y aroma aumentan fuertemente la probabilidad de que un café sea de excelencia — pero las magnitudes no deben interpretarse de forma literal. Esta limitación se profundiza en la sección de síntesis.</p>
+</section>
+</section>
+<section id="capacidad-predictiva" class="level3">
+<h3 class="anchored" data-anchor-id="capacidad-predictiva">4.2 Capacidad Predictiva</h3>
+<section id="curva-roc-y-auc" class="level4">
+<h4 class="anchored" data-anchor-id="curva-roc-y-auc">Curva ROC y AUC</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>probabilidades_finales <span class="ot">&lt;-</span> <span class="fu">predict</span>(ICO_modelo_logistico_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>curvaROC <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">predictor =</span> probabilidades_finales,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC, <span class="at">print.auc =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Café Excelente"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>El AUC obtenido es cercano a 1, lo que indica una capacidad discriminativa muy alta. Este resultado es esperable dado que las predictoras son componentes del puntaje total (endogeneidad).</p>
+</section>
+<section id="eleccion-del-punto-de-corte" class="level4">
+<h4 class="anchored" data-anchor-id="eleccion-del-punto-de-corte">Eleccion del punto de corte</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Punto de corte que maximiza sensibilidad y especificidad simultáneamente</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>corte_opt <span class="ot">&lt;-</span> <span class="fu">coords</span>(curvaROC, <span class="st">"best"</span>, <span class="at">ret =</span> <span class="st">"threshold"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Punto de corte óptimo:"</span>, <span class="fu">round</span>(corte_opt<span class="sc">$</span>threshold, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Punto de corte óptimo: 0.7437 </code></pre>
+</div>
+</div>
+<p>Se utilizó el punto de corte 0.5 como referencia inicial, razonable dado que las clases están balanceadas (56% vs 44%). Sin embargo, el corte óptimo según la curva ROC es aproximadamente <strong>0.74</strong>, el cual maximiza simultáneamente la sensibilidad y la especificidad.</p>
+</section>
+<section id="matriz-de-confusión-corte-0.5" class="level4">
+<h4 class="anchored" data-anchor-id="matriz-de-confusión-corte-0.5">Matriz de confusión (corte 0.5)</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>predicciones_finales <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>matriz_final <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_finales, </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>                                ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>                                <span class="at">positive =</span> <span class="st">"1"</span>)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>matriz_final</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Confusion Matrix and Statistics
@@ -392,23 +778,347 @@ Prediction   0   1
                                           
  Mcnemar's Test P-Value : 0.332           
                                           
-            Sensitivity : 0.9326          
-            Specificity : 0.9027          
-         Pos Pred Value : 0.8830          
-         Neg Pred Value : 0.9444          
-             Prevalence : 0.4406          
-         Detection Rate : 0.4109          
-   Detection Prevalence : 0.4653          
+            Sensitivity : 0.9027          
+            Specificity : 0.9326          
+         Pos Pred Value : 0.9444          
+         Neg Pred Value : 0.8830          
+             Prevalence : 0.5594          
+         Detection Rate : 0.5050          
+   Detection Prevalence : 0.5347          
       Balanced Accuracy : 0.9176          
                                           
-       'Positive' Class : 0               
+       'Positive' Class : 1               
                                           </code></pre>
 </div>
 </div>
-<section id="interpretación-de-la-capacidad-predictiva" class="level5">
-<h5 class="anchored" data-anchor-id="interpretación-de-la-capacidad-predictiva">Interpretación de la Capacidad Predictiva:</h5>
-<p>El modelo logra una exactitud (Accuracy) superior al 92%. Específicamente, demostró una gran sensibilidad y especificidad, logrando predecir e identificar a los verdaderos cafés de excelencia (Clase 1) en más de un 93% de los casos reales.</p>
 </section>
+<section id="matriz-de-confusión-corte-óptimo" class="level4">
+<h4 class="anchored" data-anchor-id="matriz-de-confusión-corte-óptimo">Matriz de confusión (corte óptimo)</h4>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>predicciones_opt <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(probabilidades_finales <span class="sc">&gt;=</span> corte_opt<span class="sc">$</span>threshold, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>matriz_opt <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(predicciones_opt,</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                              ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">positive =</span> <span class="st">"1"</span>)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>matriz_opt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction   0   1
+         0  85  12
+         1   4 101
+                                         
+               Accuracy : 0.9208         
+                 95% CI : (0.8746, 0.954)
+    No Information Rate : 0.5594         
+    P-Value [Acc &gt; NIR] : &lt; 2e-16        
+                                         
+                  Kappa : 0.8408         
+                                         
+ Mcnemar's Test P-Value : 0.08012        
+                                         
+            Sensitivity : 0.8938         
+            Specificity : 0.9551         
+         Pos Pred Value : 0.9619         
+         Neg Pred Value : 0.8763         
+             Prevalence : 0.5594         
+         Detection Rate : 0.5000         
+   Detection Prevalence : 0.5198         
+      Balanced Accuracy : 0.9244         
+                                         
+       'Positive' Class : 1              
+                                         </code></pre>
+</div>
+</div>
+<p>El modelo logra una exactitud superior al 91% con el corte 0.5. Con el corte óptimo la exactitud varía levemente pero mejora el equilibrio entre sensibilidad y especificidad.</p>
+</section>
+</section>
+<section id="validación-con-datos-no-vistos-traintest" class="level3">
+<h3 class="anchored" data-anchor-id="validación-con-datos-no-vistos-traintest">4.3 Validación con datos no vistos (train/test)</h3>
+<p>Al entrenar y evaluar el modelo con los mismos datos se corre el riesgo de obtener métricas infladas (overfitting), ya que el modelo “vio” todos los casos durante el ajuste. Para verificar que el modelo generaliza correctamente, se realizó una partición estratificada 70% entrenamiento / 30% prueba.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>idx   <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">p =</span> <span class="fl">0.7</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> ICO_modelo[idx, ]</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>test  <span class="ot">&lt;-</span> ICO_modelo[<span class="sc">-</span>idx, ]</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Ajuste solo con datos de entrenamiento</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>modelo_train <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Acidity <span class="sc">+</span> Body <span class="sc">+</span> Aroma,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>                    <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> train)</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluación en datos de prueba (no vistos)</span></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>p_test <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_train, <span class="at">newdata =</span> test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>y_test <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(p_test <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(y_test, test<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 24  3
+         1  2 30
+                                          
+               Accuracy : 0.9153          
+                 95% CI : (0.8132, 0.9719)
+    No Information Rate : 0.5593          
+    P-Value [Acc &gt; NIR] : 2.216e-09       
+                                          
+                  Kappa : 0.8288          
+                                          
+ Mcnemar's Test P-Value : 1               
+                                          
+            Sensitivity : 0.9091          
+            Specificity : 0.9231          
+         Pos Pred Value : 0.9375          
+         Neg Pred Value : 0.8889          
+             Prevalence : 0.5593          
+         Detection Rate : 0.5085          
+   Detection Prevalence : 0.5424          
+      Balanced Accuracy : 0.9161          
+                                          
+       'Positive' Class : 1               
+                                          </code></pre>
+</div>
+</div>
+<p>La performance en el conjunto de prueba es similar a la obtenida con el dataset completo, lo que indica que el modelo <strong>generaliza correctamente</strong> y no está sobreajustado a los datos de entrenamiento.</p>
+</section>
+</section>
+<section id="modelo-alternativo-sin-endogeneidad" class="level2">
+<h2 class="anchored" data-anchor-id="modelo-alternativo-sin-endogeneidad">5. Modelo Alternativo sin Endogeneidad</h2>
+<p>Durante el análisis identificamos que tanto el modelo de regresión lineal como el logístico presentaban un problema de <strong>endogeneidad parcial</strong>: las variables predictoras utilizadas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) son componentes que suman directamente al puntaje total, lo que infla artificialmente las métricas de ajuste y predicción.</p>
+<p>Como análisis complementario, ajustamos modelos alternativos utilizando exclusivamente <strong>variables independientes del puntaje total</strong>, con el objetivo de obtener relaciones genuinas entre características objetivas del café y su calidad. Este modelo no reemplaza al principal sino que lo complementa, ilustrando qué ocurre cuando se elimina la circularidad.</p>
+<hr>
+<section id="regresión-lineal-múltiple-sin-endogeneidad" class="level3">
+<h3 class="anchored" data-anchor-id="regresión-lineal-múltiple-sin-endogeneidad">5.1 Regresión Lineal Múltiple sin endogeneidad</h3>
+<p>Se aplicó el mismo procedimiento backward por AIC sobre las variables físicas y de calidad del grano disponibles: altitud, humedad, defectos de categoría 1, defectos de categoría 2 y Quakers (granos sin madurar).</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo completo con variables NO endógenas</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>modelo_completo_noend <span class="ot">&lt;-</span> <span class="fu">lm</span>(Total.Cup.Points <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                                               Moisture.Percentage <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                                               Category.One.Defects <span class="sc">+</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects <span class="sc">+</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                                               Quakers,</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Selección backward por AIC</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>modelo_step_noend <span class="ot">&lt;-</span> <span class="fu">stepAIC</span>(modelo_completo_noend, </span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">direction =</span> <span class="st">"backward"</span>, </span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_step_noend)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Total.Cup.Points ~ Altitude_Promedio + Category.Two.Defects + 
+    Quakers, data = ICO_modelo)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-5.8056 -0.9524  0.0121  1.2268  4.9572 
+
+Coefficients:
+                       Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)          82.9380096  0.2958349 280.352  &lt; 2e-16 ***
+Altitude_Promedio     0.0010523  0.0002303   4.570 8.58e-06 ***
+Category.Two.Defects -0.1583372  0.0429386  -3.688 0.000292 ***
+Quakers              -0.2665748  0.0736153  -3.621 0.000373 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.547 on 198 degrees of freedom
+Multiple R-squared:  0.2238,    Adjusted R-squared:  0.212 
+F-statistic: 19.02 on 3 and 198 DF,  p-value: 6.985e-11</code></pre>
+</div>
+</div>
+<p>El backward seleccionó <strong>Altitud, defectos de categoría 2 y Quakers</strong> como variables relevantes. Las tres resultaron significativas (p &lt; 0.001).</p>
+<p>El <strong>R² ajustado fue de 21.2%</strong>, considerablemente menor al del modelo principal (94.5%). Esto es esperable: estas variables no son componentes del puntaje sino características objetivas del café y su cultivo, por lo que la relación es más débil pero genuina.</p>
+<p><strong>Interpretación de los coeficientes:</strong></p>
+<ul>
+<li><p><strong>Altitud (0.00105):</strong> por cada metro adicional de altitud, el puntaje sube en promedio 0.00105 puntos. El efecto es pequeño por metro pero acumulado en cientos de metros resulta relevante, y es estadísticamente significativo.</p></li>
+<li><p><strong>Defectos de categoría 2 (-0.158):</strong> por cada defecto adicional, el puntaje baja 0.158 puntos. Más defectos implica menor calidad, lo cual tiene sentido desde el punto de vista del café.</p></li>
+<li><p><strong>Quakers (-0.267):</strong> por cada grano sin madurar adicional, el puntaje baja 0.267 puntos. Los granos sin madurar perjudican la calidad de la taza.</p></li>
+</ul>
+<p>Estas relaciones tienen sentido real desde el punto de vista cafetero y no dependen de la circularidad del modelo principal.</p>
+<hr>
+</section>
+<section id="regresión-logística-sin-endogeneidad" class="level3">
+<h3 class="anchored" data-anchor-id="regresión-logística-sin-endogeneidad">5.2 Regresión Logística sin endogeneidad</h3>
+<p>Se ajustó un modelo logístico con las mismas variables independientes del puntaje. Tras evaluar la significancia de cada variable, el modelo final quedó con <strong>Altitud y defectos de categoría 2</strong> (los Quakers no resultaron significativos en la logística y fueron descartados).</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modelo logístico sin endogeneidad</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>modelo_log_noend_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> Altitude_Promedio <span class="sc">+</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>                                               Category.Two.Defects,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Cafe_Excelente ~ Altitude_Promedio + Category.Two.Defects, 
+    family = "binomial", data = ICO_modelo)
+
+Coefficients:
+                       Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)          -0.6822044  0.3986402  -1.711 0.087020 .  
+Altitude_Promedio     0.0011008  0.0003216   3.423 0.000620 ***
+Category.Two.Defects -0.1938223  0.0583913  -3.319 0.000902 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 277.17  on 201  degrees of freedom
+Residual deviance: 257.02  on 199  degrees of freedom
+AIC: 263.02
+
+Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prueba de hipótesis global</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>modelo_nulo2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Cafe_Excelente <span class="sc">~</span> <span class="dv">1</span>, <span class="at">family =</span> <span class="st">"binomial"</span>, <span class="at">data =</span> ICO_modelo)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">lrtest</span>(modelo_nulo2, modelo_log_noend_final)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Likelihood ratio test
+
+Model 1: Cafe_Excelente ~ 1
+Model 2: Cafe_Excelente ~ Altitude_Promedio + Category.Two.Defects
+  #Df  LogLik Df  Chisq Pr(&gt;Chisq)    
+1   1 -138.59                         
+2   3 -128.51  2 20.156  4.199e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Razones de odds con IC</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">cbind</span>(<span class="at">OR =</span> <span class="fu">coef</span>(modelo_log_noend_final), </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">confint</span>(modelo_log_noend_final))) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                         OR  2.5 % 97.5 %
+(Intercept)          0.5055 0.2271 1.0932
+Altitude_Promedio    1.0011 1.0005 1.0018
+Category.Two.Defects 0.8238 0.7293 0.9184</code></pre>
+</div>
+</div>
+<p>El test de razón de verosimilitud confirmó que el modelo es significativamente mejor que el nulo (p &lt; 0.001). Ambas variables son significativas.</p>
+<p><strong>Interpretación de las razones de odds:</strong></p>
+<ul>
+<li><p><strong>Altitud (OR = 1.001):</strong> por cada metro adicional de altitud, el odds de ser un café excelente aumenta levemente pero de forma genuina y significativa.</p></li>
+<li><p><strong>Defectos categoría 2 (OR = 0.824):</strong> por cada defecto adicional, el odds de ser excelente se reduce un <strong>17.6%</strong>. Más defectos implica menor probabilidad de alcanzar el nivel de excelencia.</p></li>
+</ul>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Curva ROC y capacidad predictiva</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>prob_noend <span class="ot">&lt;-</span> <span class="fu">predict</span>(modelo_log_noend_final, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>curvaROC_noend <span class="ot">&lt;-</span> <span class="fu">roc</span>(<span class="at">response  =</span> ICO_modelo<span class="sc">$</span>Cafe_Excelente,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">predictor =</span> prob_noend,</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">quiet     =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(curvaROC_noend, <span class="at">print.auc =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Curva ROC - Modelo sin endogeneidad"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Final_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Matriz de confusión con corte 0.5</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>pred_noend <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(prob_noend <span class="sc">&gt;=</span> <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">confusionMatrix</span>(pred_noend, ICO_modelo<span class="sc">$</span>Cafe_Excelente, <span class="at">positive =</span> <span class="st">"1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Confusion Matrix and Statistics
+
+          Reference
+Prediction  0  1
+         0 42 25
+         1 47 88
+                                          
+               Accuracy : 0.6436          
+                 95% CI : (0.5733, 0.7095)
+    No Information Rate : 0.5594          
+    P-Value [Acc &gt; NIR] : 0.009242        
+                                          
+                  Kappa : 0.2574          
+                                          
+ Mcnemar's Test P-Value : 0.013328        
+                                          
+            Sensitivity : 0.7788          
+            Specificity : 0.4719          
+         Pos Pred Value : 0.6519          
+         Neg Pred Value : 0.6269          
+             Prevalence : 0.5594          
+         Detection Rate : 0.4356          
+   Detection Prevalence : 0.6683          
+      Balanced Accuracy : 0.6253          
+                                          
+       'Positive' Class : 1               
+                                          </code></pre>
+</div>
+</div>
+<p>La capacidad predictiva es considerablemente menor que la del modelo principal: la exactitud fue de <strong>64.4%</strong> (vs 92% del modelo con variables sensoriales) y el AUC ronda <strong>0.68</strong> (vs 0.979 del original).</p>
+<hr>
+</section>
+<section id="comparación-de-modelos" class="level3">
+<h3 class="anchored" data-anchor-id="comparación-de-modelos">5.3 Comparación de modelos</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Modelo principal</th>
+<th>Modelo sin endogeneidad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Variables</strong></td>
+<td>Acidity, Body, Aroma</td>
+<td>Altitud, Defectos cat. 2</td>
+</tr>
+<tr class="even">
+<td><strong>Accuracy</strong></td>
+<td>92.1%</td>
+<td>64.4%</td>
+</tr>
+<tr class="odd">
+<td><strong>AUC</strong></td>
+<td>0.979</td>
+<td>~0.68</td>
+</tr>
+<tr class="even">
+<td><strong>Endogeneidad</strong></td>
+<td>Sí</td>
+<td>No</td>
+</tr>
+<tr class="odd">
+<td><strong>Relaciones</strong></td>
+<td>Infladas artificialmente</td>
+<td>Genuinas</td>
+</tr>
+</tbody>
+</table>
+<p>Esta comparación ilustra claramente el efecto de la endogeneidad: el modelo principal predice muy bien porque sus predictoras son componentes del puntaje, mientras que el modelo alternativo, aunque predice peor, encuentra relaciones reales entre características objetivas del café y su calidad.</p>
+<p>La conclusión más valiosa de este análisis complementario es que <strong>la altitud de cultivo y la ausencia de defectos tienen un efecto genuino y significativo sobre la calidad del café</strong>, independientemente del puntaje sensorial.</p>
 </section>
 </section>
 <section id="síntesis-y-limitaciones-del-estudio" class="level2">

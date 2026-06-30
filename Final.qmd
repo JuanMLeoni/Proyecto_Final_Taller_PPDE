@@ -17,7 +17,7 @@ execute:
 
 El presente trabajo tiene como objetivo analizar un conjunto de datos sobre la evaluación internacional de la calidad del café (arábica). A través de técnicas de pre-procesamiento, análisis exploratorio y modelado estadístico (Regresión Lineal Múltiple y Regresión Logística), buscaremos identificar qué variables sensoriales y físicas determinan el puntaje final de una taza de café y qué factores permiten predecir si un café alcanzará el grado de "Excelencia".
 
----
+
 ## Fuente de Datos 
 Los datos son reales, provienen del Coffee Quality Institute (CQI), recopilados a través de la base pública del proyecto del que sale el dataset de Kaggle "Coffee Quality Data (CQI)". Son evaluaciones de cata profesional (protocolo SCA) de cafés arábica de distintos países. Cada café fue puntuado por catadores certificados (Q-graders).
 
@@ -185,6 +185,8 @@ modelo_original <- lm(Total.Cup.Points ~ Flavor + Balance + Altitude_Promedio,
 AIC(modelo_original, modelo_step)
 ```
 
+
+
 ## Seleccion de Variables
 Para no elegir las covariables de manera arbitraria, se aplicó un método de selección automática. Se partió de un modelo amplio que incluía las variables sensoriales candidatas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) junto con dos variables físicas (Altitude_Promedio y Moisture.Percentage), y se aplicó el procedimiento backward por criterio AIC mediante stepAIC.
 
@@ -206,7 +208,7 @@ Interpretación: El modelo arrojó un R-cuadrado ajustado superior al 0.94, lo q
 
 Los coeficientes indican que, manteniendo las demás variables constantes, por cada punto adicional de Flavor el puntaje total aumenta en promedio 3.36 puntos, y por cada punto de Balance aumenta 3.11 puntos. El coeficiente de Altitud (0.00017) es positivo y significativo, indicando que a mayor altitud, mayor puntaje, aunque su efecto por metro es muy pequeño.
 
-### 3.1 Analisis de Multicolineabilidad (VIF)
+### 3.1 Analisis de Multicolinealidad (VIF)
 Dado que en el EDA se observaron correlaciones altas entre varias variables sensoriales, se evaluó la posible presencia de multicolinealidad mediante el Factor de Inflación de la Varianza (VIF).
 
 ```{r}
@@ -368,7 +370,7 @@ cat("Punto de corte óptimo:", round(corte_opt$threshold, 4), "\n")
 
 Se utilizó el punto de corte 0.5 como referencia inicial, razonable dado que 
 las clases están balanceadas (56% vs 44%). Sin embargo, el corte óptimo 
-según la curva ROC es aproximadamente **0.77**, el cual maximiza 
+según la curva ROC es aproximadamente **0.74**, el cual maximiza 
 simultáneamente la sensibilidad y la especificidad.
 
 #### Matriz de confusión (corte 0.5)
@@ -395,7 +397,8 @@ El modelo logra una exactitud superior al 91% con el corte 0.5.
 Con el corte óptimo la exactitud varía levemente pero mejora el 
 equilibrio entre sensibilidad y especificidad.
 
-### 4.3 Validacion con datos no vistos (train/test)
+### 4.3  Validación con datos no vistos (train/test)
+
 Al entrenar y evaluar el modelo con los mismos datos se corre el riesgo de 
 obtener métricas infladas (overfitting), ya que el modelo "vio" todos los casos 
 durante el ajuste. Para verificar que el modelo generaliza correctamente, 
@@ -422,6 +425,149 @@ La performance en el conjunto de prueba es similar a la obtenida con el
 dataset completo, lo que indica que el modelo **generaliza correctamente** 
 y no está sobreajustado a los datos de entrenamiento.
 
+
+## 5. Modelo Alternativo sin Endogeneidad
+
+Durante el análisis identificamos que tanto el modelo de regresión lineal como 
+el logístico presentaban un problema de **endogeneidad parcial**: las variables 
+predictoras utilizadas (Aroma, Flavor, Aftertaste, Acidity, Body, Balance) son 
+componentes que suman directamente al puntaje total, lo que infla artificialmente 
+las métricas de ajuste y predicción.
+
+Como análisis complementario, ajustamos modelos alternativos utilizando 
+exclusivamente **variables independientes del puntaje total**, con el objetivo 
+de obtener relaciones genuinas entre características objetivas del café y su 
+calidad. Este modelo no reemplaza al principal sino que lo complementa, 
+ilustrando qué ocurre cuando se elimina la circularidad.
+
+---
+
+### 5.1 Regresión Lineal Múltiple sin endogeneidad
+
+Se aplicó el mismo procedimiento backward por AIC sobre las variables físicas 
+y de calidad del grano disponibles: altitud, humedad, defectos de categoría 1, 
+defectos de categoría 2 y Quakers (granos sin madurar).
+
+```{r}
+# Modelo completo con variables NO endógenas
+modelo_completo_noend <- lm(Total.Cup.Points ~ Altitude_Promedio + 
+                                               Moisture.Percentage +
+                                               Category.One.Defects +
+                                               Category.Two.Defects +
+                                               Quakers,
+                            data = ICO_modelo)
+
+# Selección backward por AIC
+modelo_step_noend <- stepAIC(modelo_completo_noend, 
+                             direction = "backward", 
+                             trace = FALSE)
+summary(modelo_step_noend)
+```
+
+El backward seleccionó **Altitud, defectos de categoría 2 y Quakers** como 
+variables relevantes. Las tres resultaron significativas (p < 0.001).
+
+El **R² ajustado fue de 21.2%**, considerablemente menor al del modelo principal 
+(94.5%). Esto es esperable: estas variables no son componentes del puntaje sino 
+características objetivas del café y su cultivo, por lo que la relación es más 
+débil pero genuina.
+
+**Interpretación de los coeficientes:**
+
+- **Altitud (0.00105):** por cada metro adicional de altitud, el puntaje sube 
+en promedio 0.00105 puntos. El efecto es pequeño por metro pero acumulado en 
+cientos de metros resulta relevante, y es estadísticamente significativo.
+
+- **Defectos de categoría 2 (-0.158):** por cada defecto adicional, el puntaje 
+baja 0.158 puntos. Más defectos implica menor calidad, lo cual tiene sentido 
+desde el punto de vista del café.
+
+- **Quakers (-0.267):** por cada grano sin madurar adicional, el puntaje baja 
+0.267 puntos. Los granos sin madurar perjudican la calidad de la taza.
+
+Estas relaciones tienen sentido real desde el punto de vista cafetero y no 
+dependen de la circularidad del modelo principal.
+
+---
+
+### 5.2 Regresión Logística sin endogeneidad
+
+Se ajustó un modelo logístico con las mismas variables independientes del 
+puntaje. Tras evaluar la significancia de cada variable, el modelo final 
+quedó con **Altitud y defectos de categoría 2** (los Quakers no resultaron 
+significativos en la logística y fueron descartados).
+
+```{r}
+# Modelo logístico sin endogeneidad
+modelo_log_noend_final <- glm(Cafe_Excelente ~ Altitude_Promedio + 
+                                               Category.Two.Defects,
+                              family = "binomial", data = ICO_modelo)
+summary(modelo_log_noend_final)
+
+# Prueba de hipótesis global
+modelo_nulo2 <- glm(Cafe_Excelente ~ 1, family = "binomial", data = ICO_modelo)
+lrtest(modelo_nulo2, modelo_log_noend_final)
+
+# Razones de odds con IC
+exp(cbind(OR = coef(modelo_log_noend_final), 
+          confint(modelo_log_noend_final))) |> round(4)
+```
+
+El test de razón de verosimilitud confirmó que el modelo es significativamente 
+mejor que el nulo (p < 0.001). Ambas variables son significativas.
+
+**Interpretación de las razones de odds:**
+
+- **Altitud (OR = 1.001):** por cada metro adicional de altitud, el odds de 
+ser un café excelente aumenta levemente pero de forma genuina y significativa.
+
+- **Defectos categoría 2 (OR = 0.824):** por cada defecto adicional, el odds 
+de ser excelente se reduce un **17.6%**. Más defectos implica menor probabilidad 
+de alcanzar el nivel de excelencia.
+
+```{r}
+# Curva ROC y capacidad predictiva
+prob_noend <- predict(modelo_log_noend_final, type = "response")
+
+curvaROC_noend <- roc(response  = ICO_modelo$Cafe_Excelente,
+                      predictor = prob_noend,
+                      quiet     = TRUE)
+
+plot(curvaROC_noend, print.auc = TRUE,
+     main = "Curva ROC - Modelo sin endogeneidad")
+
+# Matriz de confusión con corte 0.5
+pred_noend <- as.factor(ifelse(prob_noend >= 0.5, 1, 0))
+confusionMatrix(pred_noend, ICO_modelo$Cafe_Excelente, positive = "1")
+```
+
+La capacidad predictiva es considerablemente menor que la del modelo principal:
+la exactitud fue de **64.4%** (vs 92% del modelo con variables sensoriales) y 
+el AUC ronda **0.68** (vs 0.979 del original).
+
+---
+
+### 5.3 Comparación de modelos
+
+| | Modelo principal | Modelo sin endogeneidad |
+|---|---|---|
+| **Variables** | Acidity, Body, Aroma | Altitud, Defectos cat. 2 |
+| **Accuracy** | 92.1% | 64.4% |
+| **AUC** | 0.979 | ~0.68 |
+| **Endogeneidad** | Sí | No |
+| **Relaciones** | Infladas artificialmente | Genuinas |
+
+Esta comparación ilustra claramente el efecto de la endogeneidad: el modelo 
+principal predice muy bien porque sus predictoras son componentes del puntaje, 
+mientras que el modelo alternativo, aunque predice peor, encuentra relaciones 
+reales entre características objetivas del café y su calidad.
+
+La conclusión más valiosa de este análisis complementario es que **la altitud 
+de cultivo y la ausencia de defectos tienen un efecto genuino y significativo 
+sobre la calidad del café**, independientemente del puntaje sensorial.
+
+
+
 ## 5. Síntesis y Limitaciones del Estudio
 
 El presente trabajo demostró exitosamente cómo la combinación de factores de cata y origen físico (altitud) permiten explicar y clasificar la calidad del café mediante modelos estadísticos robustos. Sin embargo, el análisis presenta las siguientes limitaciones inherentes:
@@ -433,3 +579,4 @@ El presente trabajo demostró exitosamente cómo la combinación de factores de 
 3. Endogeneidad Parcial en la Regresión Logística: Las variables predictoras utilizadas en el modelo logístico son atributos que contribuyen aritméticamente al puntaje total original del cual se derivó el umbral binario. No obstante, el objetivo analítico de esta clasificación no fue replicar la suma, sino descubrir el peso probabilístico relativo de cada variable para entender cuáles atributos empujan con mayor fuerza a un café hacia el rango de especialidad comercial.
 
 4. Arbitrariedad del Umbral Categórico: La definición de la clase "Excelente" dependió de un punto de corte manual (83.5). Una modificación en los estándares del mercado que desplace este límite alteraría la distribución de clases, requiriendo el reentrenamiento del algoritmo de clasificación.
+
