@@ -32,8 +32,6 @@ Los datos son reales y provienen del **Coffee Quality Institute (CQI)**, recopil
 └── README.md
 ```
  
-> Nota: ajustar esta sección con los nombres reales de archivo si difieren.
- 
 ## Metodología
  
 ### 1. Pre-procesamiento y limpieza
@@ -86,8 +84,8 @@ install.packages(c("MASS", "tidyverse", "lubridate", "ggplot2",
                     "nortest", "pROC", "car"))
 ```
  
-Para reproducir el análisis, abrir y ejecutar `analisis_cafe.Rmd` en RStudio (o renderizar vía `rmarkdown::render()`), asegurando que el archivo `data/df_arabica_clean.csv` esté disponible en la ruta relativa esperada.
+Para reproducir el análisis, abrir y ejecutar `Final.qmd` en RStudio (o renderizar vía `rmarkdown::render()`), asegurando que el archivo `data/ICO_norm.csv` esté disponible en la ruta relativa esperada.
  
 ## Reporte completo
  
-El detalle completo del análisis, incluyendo código, gráficos y resultados de cada test estadístico, está disponible en `analisis_cafe.html`.
+El detalle completo del análisis, incluyendo código, gráficos y resultados de cada test estadístico, está disponible en `Final.html`.
